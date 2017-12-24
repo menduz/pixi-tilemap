@@ -1,9 +1,9 @@
-module PIXI.tilemap {
+namespace PIXI.tilemap {
 
-    import GLBuffer = PIXI.glCore.GLBuffer;
-    import VertexArrayObject = PIXI.glCore.VertexArrayObject;
+  import GLBuffer = PIXI.glCore.GLBuffer;
+  import VertexArrayObject = PIXI.glCore.VertexArrayObject;
 
-    var squareShaderVert = `
+  let squareShaderVert = `
 attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
 attribute vec2 aAnim;
@@ -28,7 +28,7 @@ void main(void){
 }
 `;
 
-    var squareShaderFrag = `
+  let squareShaderFrag = `
 varying vec2 vTextureCoord;
 varying float vSize;
 varying float vTextureId;
@@ -51,32 +51,33 @@ void main(void){
 
 `;
 
-    export class SquareTileShader extends TilemapShader {
-        vertSize = 8;
-        vertPerQuad = 1;
-        stride = this.vertSize * 4;
+  export class SquareTileShader extends TilemapShader {
+    vertSize = 8;
+    vertPerQuad = 1;
+    stride = this.vertSize * 4;
 
-        constructor(gl: WebGLRenderingContext, maxTextures: number) {
-            super(gl,
-                maxTextures,
-                squareShaderVert,
-                shaderGenerator.generateFragmentSrc(maxTextures, squareShaderFrag)
-            );
-            this.maxTextures = maxTextures;
-            shaderGenerator.fillSamplers(this, this.maxTextures);
-        }
-
-        indexBuffer: GLBuffer;
-
-        createVao(renderer: WebGLRenderer, vb: GLBuffer): VertexArrayObject {
-            var gl = renderer.gl;
-            return renderer.createVao()
-                .addIndex(this.indexBuffer)
-                .addAttribute(vb, this.attributes.aVertexPosition, gl.FLOAT, false, this.stride, 0)
-                .addAttribute(vb, this.attributes.aTextureCoord, gl.FLOAT, false, this.stride, 2 * 4)
-                .addAttribute(vb, this.attributes.aSize, gl.FLOAT, false, this.stride, 4 * 4)
-                .addAttribute(vb, this.attributes.aAnim, gl.FLOAT, false, this.stride, 5 * 4)
-                .addAttribute(vb, this.attributes.aTextureId, gl.FLOAT, false, this.stride, 7 * 4);
-        };
+    constructor(gl: WebGLRenderingContext, maxTextures: number) {
+      super(gl,
+        maxTextures,
+        squareShaderVert,
+        shaderGenerator.generateFragmentSrc(maxTextures, squareShaderFrag)
+      );
+      this.maxTextures = maxTextures;
+      shaderGenerator.fillSamplers(this, this.maxTextures);
     }
+
+    indexBuffer: GLBuffer;
+
+    createVao(renderer: WebGLRenderer, vb: GLBuffer): VertexArrayObject {
+      let gl = renderer.gl;
+      return renderer
+        .createVao()
+        .addIndex(this.indexBuffer)
+        .addAttribute(vb, this.attributes.aVertexPosition, gl.FLOAT, false, this.stride, 0)
+        .addAttribute(vb, this.attributes.aTextureCoord, gl.FLOAT, false, this.stride, 2 * 4)
+        .addAttribute(vb, this.attributes.aSize, gl.FLOAT, false, this.stride, 4 * 4)
+        .addAttribute(vb, this.attributes.aAnim, gl.FLOAT, false, this.stride, 5 * 4)
+        .addAttribute(vb, this.attributes.aTextureId, gl.FLOAT, false, this.stride, 7 * 4);
+    }
+  }
 }

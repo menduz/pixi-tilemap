@@ -1,52 +1,59 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimum-scale=1, width=device-width, height=device-height">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <title>Tiles demo</title>
-    <style>
-        body { background: white; margin: 0;}
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimum-scale=1, width=device-width, height=device-height">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <title>Tiles demo</title>
+  <style>
+    body {
+      background: white;
+      margin: 0;
+    }
 
-        canvas {
-        }
+    canvas {}
 
-        .game-canvas {
-            position: absolute;
-            /*image-rendering: pixelated;
+    .game-canvas {
+      position: absolute;
+      /*image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: -webkit-optimize-contrast;
             image-rendering: -o-crisp-edges;
             image-rendering: optimize-contrast;
             -ms-interpolation-mode: nearest-neighbor;*/
-        }
+    }
 
-        .outer-container {
-            position: absolute;
-            left: 0px;
-            right: 0px;
-            top: 0px;
-            bottom: 0px;
-            overflow: hidden;
-        }
+    .outer-container {
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+      overflow: hidden;
+    }
 
-        .inner-container {
-            position: relative;
-            overflow: hidden;
-        }
+    .inner-container {
+      position: relative;
+      overflow: hidden;
+    }
 
-        #frontCanvas {
-            pointer-events: none;
-        }
-    </style>
-    <script src="lib/jquery.min.js"></script>
-    <script src="lib/pixi-4.5.3.js"></script>
-    <script src="bin/pixi-tilemap.js"></script>
-    <script src="demo/rpgmaker.js"></script>
-    <script src="demo/main.js"></script>
+    #frontCanvas {
+      pointer-events: none;
+    }
+  </style>
+
+  <script src="lib/jquery.min.js"></script>
+  <script src="lib/pixi-4.5.3.js"></script>
+  <script src="bin/pixi-tilemap.js"></script>
 </head>
-<body onload="go()">
-   <canvas id="backCanvas" class="game-canvas"></canvas>
+
+<body onload="Arduz.start()">
+  <canvas id="backCanvas" class="game-canvas"></canvas>
+  <script>
+    (function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = '//rawgit.com/mrdoob/stats.js/master/build/stats.min.js'; document.head.appendChild(script); })()
+  </script>
 </body>
+
 </html>

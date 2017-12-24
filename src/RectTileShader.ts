@@ -1,8 +1,8 @@
-module PIXI.tilemap {
+namespace PIXI.tilemap {
 
-    import GLBuffer = PIXI.glCore.GLBuffer;
-    import VertexArrayObject = PIXI.glCore.VertexArrayObject;
-    var rectShaderFrag = `varying vec2 vTextureCoord;
+  import GLBuffer = PIXI.glCore.GLBuffer;
+  import VertexArrayObject = PIXI.glCore.VertexArrayObject;
+  let rectShaderFrag = `varying vec2 vTextureCoord;
 varying vec4 vFrame;
 varying float vTextureId;
 uniform vec4 shadowColor;
@@ -18,7 +18,7 @@ void main(void){
    gl_FragColor = color;
 }`;
 
-    var rectShaderVert = `
+  let rectShaderVert = `
 attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
 attribute vec4 aFrame;
@@ -41,44 +41,44 @@ void main(void){
 }
 `;
 
-    export abstract class TilemapShader extends PIXI.Shader {
-        maxTextures = 0;
-        indexBuffer: GLBuffer;
-        constructor(gl: WebGLRenderingContext, maxTextures: number, shaderVert: string, shaderFrag: string) {
-            super(gl,
-                shaderVert,
-                shaderFrag
-            );
-            this.maxTextures = maxTextures;
-            shaderGenerator.fillSamplers(this, this.maxTextures);
-        }
-
-        abstract createVao(renderer : WebGLRenderer, vb: GLBuffer) : VertexArrayObject;
+  export abstract class TilemapShader extends PIXI.Shader {
+    maxTextures = 0;
+    indexBuffer: GLBuffer;
+    constructor(gl: WebGLRenderingContext, maxTextures: number, shaderVert: string, shaderFrag: string) {
+      super(gl,
+        shaderVert,
+        shaderFrag
+      );
+      this.maxTextures = maxTextures;
+      shaderGenerator.fillSamplers(this, this.maxTextures);
     }
 
-    export class RectTileShader extends TilemapShader {
-        vertSize = 11;
-        vertPerQuad = 4;
-        stride = this.vertSize * 4;
+    abstract createVao(renderer: WebGLRenderer, vb: GLBuffer): VertexArrayObject;
+  }
 
-        constructor(gl: WebGLRenderingContext, maxTextures: number) {
-            super(gl,
-                maxTextures,
-                rectShaderVert,
-                shaderGenerator.generateFragmentSrc(maxTextures, rectShaderFrag)
-            );
-            shaderGenerator.fillSamplers(this, this.maxTextures);
-        }
+  export class RectTileShader extends TilemapShader {
+    vertSize = 11;
+    vertPerQuad = 4;
+    stride = this.vertSize * 4;
 
-        createVao(renderer : WebGLRenderer, vb: GLBuffer) {
-            var gl = renderer.gl;
-            return renderer.createVao()
-                .addIndex(this.indexBuffer)
-                .addAttribute(vb, this.attributes.aVertexPosition, gl.FLOAT, false, this.stride, 0)
-                .addAttribute(vb, this.attributes.aTextureCoord, gl.FLOAT, false, this.stride, 2 * 4)
-                .addAttribute(vb, this.attributes.aFrame, gl.FLOAT, false, this.stride, 4 * 4)
-                .addAttribute(vb, this.attributes.aAnim, gl.FLOAT, false, this.stride, 8 * 4)
-                .addAttribute(vb, this.attributes.aTextureId, gl.FLOAT, false, this.stride, 10 * 4);
-        }
+    constructor(gl: WebGLRenderingContext, maxTextures: number) {
+      super(gl,
+        maxTextures,
+        rectShaderVert,
+        shaderGenerator.generateFragmentSrc(maxTextures, rectShaderFrag)
+      );
+      shaderGenerator.fillSamplers(this, this.maxTextures);
     }
+
+    createVao(renderer: WebGLRenderer, vb: GLBuffer) {
+      let gl = renderer.gl;
+      return renderer.createVao()
+        .addIndex(this.indexBuffer)
+        .addAttribute(vb, this.attributes.aVertexPosition, gl.FLOAT, false, this.stride, 0)
+        .addAttribute(vb, this.attributes.aTextureCoord, gl.FLOAT, false, this.stride, 2 * 4)
+        .addAttribute(vb, this.attributes.aFrame, gl.FLOAT, false, this.stride, 4 * 4)
+        .addAttribute(vb, this.attributes.aAnim, gl.FLOAT, false, this.stride, 8 * 4)
+        .addAttribute(vb, this.attributes.aTextureId, gl.FLOAT, false, this.stride, 10 * 4);
+    }
+  }
 }

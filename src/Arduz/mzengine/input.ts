@@ -1,7 +1,5 @@
 import { EventDispatcher } from "../../Core/EventDispatcher";
 
-declare let $: any;
-
 export class KeyStateObserver extends EventDispatcher {
   keyStates: Dictionary<boolean> = {};
   keyDown(cual: string) {
@@ -20,9 +18,10 @@ export class KeyStateObserver extends EventDispatcher {
     return !!this.keyStates[cual];
   }
 
-  appendTo(element?: HTMLElement) {
-    $(element || document).keydown((e: any) => this.keyDown(e.keyCode.toString()));
-    $(element || document).keyup((e: any) => this.keyUp(e.keyCode.toString()));
+  constructor() {
+    super();
+    window.addEventListener('keydown', (ev) => this.keyDown(ev.keyCode.toString()));
+    window.addEventListener('keyup', (ev) => this.keyUp(ev.keyCode.toString()));
   }
 }
 

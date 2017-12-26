@@ -63,7 +63,7 @@ export class Body {
   }
 }
 
-export let loadRaw = function (url: string, cb: () => any) {
+export let loadBodies = function (url: string, cb: () => any) {
   let bodyHeader = /\[BODY(\d+)\]/;
   let grhHeader = /WALK(1|2|3|4)=(\d+)/;
   let headOffsetHeaderX = /HeadOffsetX=(.+)/;

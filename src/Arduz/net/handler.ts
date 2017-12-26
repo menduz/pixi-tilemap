@@ -5,7 +5,7 @@
 // import { send } from './client'
 // import * as state from '../state';
 // import lg = require('../ui/loadingGame');
-// import * as Camera from '../mzengine/camera';
+// import * as Camera from '../mzengine/Camera';
 
 // import {chatPromptInstance} from '../ui/dom_chat'
 

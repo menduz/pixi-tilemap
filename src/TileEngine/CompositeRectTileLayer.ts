@@ -1,8 +1,6 @@
 /// <reference types="pixi.js" />
 import { RectTileLayer } from "./RectTileLayer";
 
-
-
 export class CompositeRectTileLayer extends PIXI.Container {
   children: RectTileLayer[];
 
@@ -136,7 +134,7 @@ export class CompositeRectTileLayer extends PIXI.Container {
   }
 
   renderWebGL(renderer: PIXI.WebGLRenderer) {
-    let gl = renderer.gl;
+    // let gl = renderer.gl;
     let shader = renderer.plugins.tilemap.getShader();
     renderer.setObjectRenderer(renderer.plugins.tilemap);
     renderer.bindShader(shader);
@@ -145,7 +143,7 @@ export class CompositeRectTileLayer extends PIXI.Container {
     renderer._activeRenderTarget.projectionMatrix.copy(this._globalMat).append(this.worldTransform);
     shader.uniforms.projectionMatrix = this._globalMat.toArray(true);
     shader.uniforms.shadowColor = this.shadowColor;
-    let af = shader.uniforms.animationFrame = renderer.plugins.tilemap.tileAnim;
+    shader.uniforms.animationFrame = renderer.plugins.tilemap.tileAnim;
     // shader.syncUniform(shader.uniforms.animationFrame);
     let layers = this.children;
     for (let i = 0; i < layers.length; i++)

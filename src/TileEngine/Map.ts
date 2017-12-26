@@ -412,13 +412,13 @@ export class Map extends PIXI.Container {
    * @private
    */
   _createLayers() {
-    let width = this._width;
-    let height = this._height;
-    let margin = this._margin;
-    let tileCols = Math.ceil(width / this._tileWidth) + 1;
-    let tileRows = Math.ceil(height / this._tileHeight) + 1;
-    let layerWidth = this._layerWidth = tileCols * this._tileWidth;
-    let layerHeight = this._layerHeight = tileRows * this._tileHeight;
+    // let width = this._width;
+    // let height = this._height;
+    // let margin = this._margin;
+    // let tileCols = Math.ceil(width / this._tileWidth) + 1;
+    // let tileRows = Math.ceil(height / this._tileHeight) + 1;
+    // let layerWidth = this._layerWidth = tileCols * this._tileWidth;
+    // let layerHeight = this._layerHeight = tileRows * this._tileHeight;
     this._needsRepaint = true;
 
     if (!this.lowerZLayer) {
@@ -487,16 +487,16 @@ export class Map extends PIXI.Container {
     let my = startY + y;
     let dx = x * this._tileWidth, dy = y * this._tileHeight;
     let tileId0 = this._readMapData(mx, my, 0);
-    let tileId1 = this._readMapData(mx, my, 1);
-    let tileId2 = this._readMapData(mx, my, 2);
-    let tileId3 = this._readMapData(mx, my, 3);
-    let shadowBits = this._readMapData(mx, my, 4);
-    let upperTileId1 = this._readMapData(mx, my - 1, 1);
+    // let tileId1 = this._readMapData(mx, my, 1);
+    // let tileId2 = this._readMapData(mx, my, 2);
+    // let tileId3 = this._readMapData(mx, my, 3);
+    // let shadowBits = this._readMapData(mx, my, 4);
+    // let upperTileId1 = this._readMapData(mx, my - 1, 1);
     let lowerLayer = this.lowerLayer.children[0];
-    let upperLayer = this.upperLayer.children[0];
+    // let upperLayer = this.upperLayer.children[0];
 
     // if (this._isHigherTile(tileId0)) {
-    this._drawTile(upperLayer, tileId0, dx, dy);
+    this._drawTile(lowerLayer, tileId0, dx, dy);
     // } else {
     //   this._drawTile(lowerLayer, tileId0, dx, dy);
     // }

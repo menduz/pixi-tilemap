@@ -1,6 +1,5 @@
 import * as bodies from './body';
-import * as input from '../mzengine/input';
-import * as Camera from '../mzengine/camera';
+import * as Camera from '../mzengine/Camera';
 
 import * as state from '../state';
 import { Heading } from '../Enums';

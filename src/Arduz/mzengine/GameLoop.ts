@@ -1,12 +1,17 @@
 import { setTileset } from "../../TileEngine/Tile";
 import { Map } from "../../TileEngine/Map";
+import { update as updateCamera, pos as cameraPos } from './Camera';
 
-export let tick = Date.now();
-let dt = 0, last = 0, animTime = 0;
+export const now = performance ? () => performance.now() : () => Date.now();
+
+export let tick = now();
+let last = 0;
 
 export let _renderer: PIXI.WebGLRenderer;
 export let stage: PIXI.Container = null;
 export let currentMap: Map = null;
+export let engineElapsedTime: number = 0;
+export const engineBaseSpeed = 0.16;
 
 let scale = +(getOptionValue('scale') || 1);
 let resolution = +(getOptionValue('resolution') || window.devicePixelRatio);
@@ -37,13 +42,12 @@ function getOptionValue(name: string) {
   return null;
 }
 
-function isOptionValid(name: string) {
-  return location.search.slice(1).split('&').indexOf(name) >= 0;
-}
+// function isOptionValid(name: string) {
+//   return location.search.slice(1).split('&').indexOf(name) >= 0;
+// }
 
-function setupView() {
-  let backCanvas: HTMLCanvasElement = document.querySelector('#backCanvas');
-  _renderer = PIXI.autoDetectRenderer(backCanvas.width, backCanvas.height, { view: backCanvas, resolution: resolution, antialias: true, autoResize: true }) as PIXI.WebGLRenderer;
+function setupView(element: HTMLCanvasElement) {
+  _renderer = PIXI.autoDetectRenderer(element.width, element.height, { view: element, resolution: resolution, antialias: true, autoResize: true }) as PIXI.WebGLRenderer;
   resize();
   window.addEventListener('resize', resize);
 }
@@ -51,31 +55,19 @@ function setupView() {
 
 
 function update() {
-  tick = Date.now();
+  tick = now();
   let dt = Math.min(1000, tick - last);
-  dt /= 1000;
+  dt *= engineBaseSpeed;
+  engineElapsedTime = dt;
   last = tick;
 
   if (stage) {
+    updateCamera(engineElapsedTime);
+
     currentMap.update();
 
-    let dt2 = dt * 0.5;
-    let w1 = currentMap._tileWidth * currentMap._mapWidth;
-    let h1 = currentMap._tileHeight * currentMap._mapHeight;
-    let x1 = currentMap.origin.x, y1 = currentMap.origin.y;
-    let x2 = 0, y2 = 0;
-    for (let i = 0; i < 30; i++) {
-      let at2 = animTime + dt2;
-      x2 = Math.max(0, w1 - _renderer.width * scale / resolution) * (Math.cos(at2 * 0.5) + 1) / 2;
-      y2 = Math.max(0, h1 - _renderer.height * scale / resolution) * (Math.sin(at2 * 0.4) + 1) / 2;
-      let d = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-      if (d > 5 * scale / resolution) {
-        dt2 = dt2 / (d / 5 / scale / ratio);
-      } else break;
-    }
-    animTime += dt2;
-    currentMap.origin.x = x2;
-    currentMap.origin.y = y2;
+    currentMap.origin.set(cameraPos.x + 16, cameraPos.y + 16);
+
     _renderer.render(stage);
     _renderer.gl.flush();
   }
@@ -133,8 +125,8 @@ function generateEmptyMap(width: number, height: number) {
 }
 
 
-export function start() {
-  setupView();
+export function start(element: HTMLCanvasElement) {
+  setupView(element);
 
   currentMap = new Map();
   stage = new PIXI.Container();

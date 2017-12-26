@@ -60,7 +60,7 @@ function parseInto(obj: any, e: string) {
   }
 }
 
-export let loadHeadsRaw = function (url: string, cb: () => any) {
+export let loadHeads = function (url: string, cb: () => any) {
   $.ajax({
     url: url || 'cdn/indexes/cabezas.txt',
     method: 'GET',
@@ -71,7 +71,7 @@ export let loadHeadsRaw = function (url: string, cb: () => any) {
   });
 };
 
-export let loadHelmetsRaw = function (url: string, cb: () => any) {
+export let loadHelmets = function (url: string, cb: () => any) {
   $.ajax({
     url: url || 'cdn/indexes/cascos.txt',
     method: 'GET',

@@ -39,8 +39,6 @@ export class Graphic {
     this.time = base.t;
   }
 
-
-
   quiet(x: number, y: number) {
     // Renders the first frame of the graphic
     this.framesCount && this.frames[0](x, y);
@@ -85,12 +83,14 @@ export class Graphic {
   }
 }
 
-function obtenerGrafico(index: number): null {
+function obtenerGrafico(index: number): PIXI.Texture {
   if (index in indexaciones) {
     let g = indexaciones[index];
 
     if (g.g) {
-      return null; // textures.Grh('cdn/grh/png/' + g.g + '.png', g.w, g.h, g.x, g.y);
+      const tex = PIXI.BaseTexture.fromImage('cdn/grh/png/' + g.g + '.png');
+
+      return new PIXI.Texture(tex, new PIXI.Rectangle(g.x, g.y, g.w, g.h)); // textures.Grh('cdn/grh/png/' + g.g + '.png', g.w, g.h, g.x, g.y);
     } else if (g.l) {
       throw "No se puede usar una animacion como frame de una animacion. frame=" + index;
     }
@@ -132,7 +132,7 @@ export function indexarAnimacion(index: number, frames: number[], tiempo: number
 
 declare var $: any;
 
-export let cargarGraficosRaw = function (url: string, cb: () => any) {
+export let loadGraphics = function (url: string, cb: () => any) {
   let grhHeader = /^Grh(\d+)=1-(\d+)-(\d+)-(\d+)-(\d+)-(\d+)/;
   let animHeader = /^Grh(\d+)=(\d+)-(.*)-(.+)$/;
   loaded = false;

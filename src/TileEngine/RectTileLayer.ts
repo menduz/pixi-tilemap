@@ -134,7 +134,7 @@ export class RectTileLayer extends PIXI.Container {
     // var samplerSize = this._tempSize;
     for (let i = 0; i < len; i++) {
       if (!textures[i] || !textures[i].valid) return;
-      let texture = textures[i].baseTexture;
+      // let texture = textures[i].baseTexture;
       // samplerSize[i * 2] = 1.0 / texture.width;
       // samplerSize[i * 2 + 1] = 1.0 / texture.height;
     }
@@ -170,14 +170,14 @@ export class RectTileLayer extends PIXI.Container {
         vertexBuf.upload(this.vbBuffer, 0, true);
       }
 
-      let arr = this.vbArray, ints = this.vbInts;
+      let arr = this.vbArray; // , ints = this.vbInts;
       // upload vertices!
       let sz = 0;
       // var tint = 0xffffffff;
       let textureId: number, shiftU: number, shiftV: number;
 
       // var tint = 0xffffffff;
-      let tint = -1;
+      // let tint = -1;
       for (let i = 0; i < points.length; i += 9) {
         let eps = 0.5;
         textureId = (points[i + 8] >> 2);

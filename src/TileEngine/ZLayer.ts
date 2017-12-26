@@ -79,7 +79,7 @@ export class ZLayer extends PIXI.Container {
       wt.tx * renderer.resolution,
       wt.ty * renderer.resolution
     );
-    let tilemap = this.tilemap;
+    // let tilemap = this.tilemap;
     renderer.context.drawImage(this.canvasBuffer, 0, 0);
   }
 }

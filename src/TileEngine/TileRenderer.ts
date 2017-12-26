@@ -57,7 +57,7 @@ export class TileRenderer extends PIXI.ObjectRenderer {
   }
 
   initBounds() {
-    const gl = this.renderer.gl;
+    // const gl = this.renderer.gl;
     for (let i = 0; i < this.maxTextures; i++) {
       const rt = PIXI.RenderTexture.create(2048, 2048);
       rt.baseTexture.premultipliedAlpha = true;

@@ -3,10 +3,10 @@ let DEFAULT_POWER_OF_TWO = 5;
 
 function makeKeysFn(shift: number) {
   return function (obj: Rect) {
-    let sx = obj.x >> shift,
-      sy = obj.y >> shift,
-      ex = (obj.x + (obj.width || 1)) >> shift,
-      ey = (obj.y + (obj.height || 1)) >> shift,
+    let sx = obj.worldX >> shift,
+      sy = obj.worldY >> shift,
+      ex = (obj.worldX + (obj.width || 1)) >> shift,
+      ey = (obj.worldY + (obj.height || 1)) >> shift,
       x, y, keys = [];
     for (y = sy; y <= ey; y++) {
       for (x = sx; x <= ex; x++) {
@@ -18,8 +18,8 @@ function makeKeysFn(shift: number) {
 }
 
 export type Rect = {
-  x: number;
-  y: number;
+  worldX: number;
+  worldY: number;
   width?: number;
   height?: number;
 };
@@ -35,11 +35,8 @@ export class SpatialHash<T extends Rect = Rect> {
   list: T[] = [];
   _lastTotalCleared = 0;
 
-  constructor(power_of_two: number) {
-    if (!power_of_two) {
-      power_of_two = DEFAULT_POWER_OF_TWO;
-    }
-    this.getKeys = makeKeysFn(power_of_two);
+  constructor(powerOfTwo: number = DEFAULT_POWER_OF_TWO) {
+    this.getKeys = makeKeysFn(powerOfTwo);
     this.hash = {};
     this.list = [];
     this._lastTotalCleared = 0;

@@ -1,10 +1,34 @@
 import { Heading } from "../Enums";
-import { IGraphic } from "./Graphic";
+import { IGraphic, OffsetCapable, WorldPositionCapable } from "./Graphic";
 
-export class WearableGraphic extends PIXI.Container {
+export class WearableGraphic extends PIXI.Container implements OffsetCapable, WorldPositionCapable {
   private _heading: Heading = Heading.South;
   private _animating: boolean = false;
   private lastSprite: IGraphic = null;
+  worldX = 0;
+  worldY = 0;
+  private _offsetX = 0;
+  private _offsetY = 0;
+
+  get offsetX() {
+    return this._offsetX;
+  }
+
+  get offsetY() {
+    return this._offsetY;
+  }
+
+  setPosition(x: number, y: number) {
+    this.worldX = x;
+    this.worldY = y;
+    this.lastSprite && this.lastSprite.setPosition(x, y);
+  }
+
+  setOffset(x: number, y: number): void {
+    this._offsetX = x;
+    this._offsetY = y;
+    this.lastSprite && this.lastSprite.setOffset(this.offsetX, this.offsetY);
+  }
 
   constructor(public sprites: IGraphic[]) {
     super();
@@ -15,16 +39,16 @@ export class WearableGraphic extends PIXI.Container {
   }
 
   private setGraphic() {
+    if (this.sprites[this._heading] == this.lastSprite) return;
+
     if (this.lastSprite) this.removeChild(this.lastSprite);
     this.lastSprite = null;
 
     if (this.sprites[this._heading]) {
       this.lastSprite = this.sprites[this._heading];
-
-      if (this._animating)
-        this.lastSprite.start();
-      else
-        this.lastSprite.stop();
+      this.lastSprite.centered = true;
+      this.lastSprite.setOffset(this.offsetX, this.offsetY);
+      this.lastSprite.animate(this._animating);
 
       this.addChild(this.lastSprite);
     }
@@ -47,10 +71,7 @@ export class WearableGraphic extends PIXI.Container {
     this._animating = !!value;
 
     if (this.lastSprite) {
-      if (this._animating)
-        this.lastSprite.start();
-      else
-        this.lastSprite.stop();
+      this.lastSprite.animate(this._animating);
     }
   }
 }

@@ -1,15 +1,40 @@
 import * as heads from './Head';
 import { Heading } from '../Enums';
-// import { renderTextCentered } from './Texts';
-import { getGraphicInstance } from '../Graphics/Graphic';
+import { getGraphicInstance, WorldPositionCapable, OffsetCapable } from '../Graphics/Graphic';
 import { WearableGraphic } from '../Graphics/WearableGraphic';
 
 declare let $: any;
 
 let cuerpos: any = {};
 
-export class Body extends PIXI.Container {
+export class Body extends PIXI.Container implements OffsetCapable, WorldPositionCapable {
   private _heading: Heading = Heading.South;
+
+  worldX = 0;
+  worldY = 0;
+
+  private _offsetX = 0;
+  private _offsetY = 0;
+
+  get offsetX() {
+    return this._offsetX;
+  }
+
+  get offsetY() {
+    return this._offsetY;
+  }
+
+  setOffset(x: number, y: number): void {
+    this._offsetX = x;
+    this._offsetY = y;
+    this.fixPositions();
+  }
+
+  setPosition(x: number, y: number) {
+    this.worldX = x;
+    this.worldY = y;
+    this.fixPositions();
+  }
 
   get heading(): Heading {
     return this._heading;
@@ -17,6 +42,7 @@ export class Body extends PIXI.Container {
 
   set heading(value: Heading) {
     this.aura && (this.aura.heading = value);
+    this.head && (this.head.heading = value);
     this.helmet && (this.helmet.heading = value);
     this.body && (this.body.heading = value);
     this.rightHand && (this.rightHand.heading = value);
@@ -33,6 +59,8 @@ export class Body extends PIXI.Container {
   nameColor: string;
   headOffsetX = 0;
   headOffsetY = 0;
+
+  speed: number = 0.5;
 
   private _isMoving = false;
 
@@ -80,19 +108,100 @@ export class Body extends PIXI.Container {
         getGraphicInstance(cuerpos[bodyIndex].g[3]),
         getGraphicInstance(cuerpos[bodyIndex].g[4])
       ]);
-      this.body.heading = this.heading;
-      this.body.animating = this.isMoving;
       this.addChild(this.body);
+      this.fixPositions();
     }
   }
 
   fixPositions() {
     if (this.head) {
-      this.head.setTransform(this.headOffsetX, this.headOffsetY);
+      this.head.setPosition(this.worldX, this.worldY);
+      this.head.setOffset(this.offsetX + this.headOffsetX, this.offsetY + this.headOffsetY);
     }
     if (this.helmet) {
-      this.head.setTransform(this.headOffsetX, this.headOffsetY);
+      this.helmet.setPosition(this.worldX, this.worldY);
+      this.helmet.setOffset(this.offsetX + this.headOffsetX, this.offsetY + this.headOffsetY);
     }
+    if (this.body) {
+      this.body.setPosition(this.worldX, this.worldY);
+      this.body.setOffset(this.offsetX, this.offsetY);
+    }
+    if (this.rightHand) {
+      this.rightHand.setPosition(this.worldX, this.worldY);
+      this.rightHand.setOffset(this.offsetX, this.offsetY);
+    }
+    if (this.leftHand) {
+      this.leftHand.setPosition(this.worldX, this.worldY);
+      this.leftHand.setOffset(this.offsetX, this.offsetY);
+    }
+  }
+
+  update(elapsedTime: number) {
+    let didSomethingChange = true;
+    if (this._offsetX > 0) {
+      this._offsetX -= (elapsedTime * this.speed) | 0;
+      if (this._offsetX <= 0) {
+        this.isMoving = false;
+      }
+    } else if (this._offsetX < 0) {
+      this._offsetX += (elapsedTime * this.speed) | 0;
+      if (this._offsetX >= 0) {
+        this.isMoving = false;
+      }
+    } else if (this._offsetY > 0) {
+      this._offsetY -= (elapsedTime * this.speed) | 0;
+      if (this._offsetY <= 0) {
+        this.isMoving = false;
+      }
+    } else if (this._offsetY < 0) {
+      this._offsetY += (elapsedTime * this.speed) | 0;
+      if (this._offsetY >= 0) {
+        this.isMoving = false;
+      }
+    } else {
+      didSomethingChange = false;
+    }
+
+    if (didSomethingChange) {
+      this.fixPositions();
+    }
+  }
+
+  moveByHead(heading: Heading) {
+    switch (heading) {
+      case Heading.South:
+        this._offsetY = -32;
+        this._offsetX = 0;
+        this.worldY++;
+        break;
+      case Heading.East:
+        this._offsetX = -32;
+        this._offsetY = 0;
+        this.worldX++;
+        break;
+      case Heading.North:
+        this._offsetY = 32;
+        this._offsetX = 0;
+        this.worldY--;
+        break;
+      case Heading.West:
+        this._offsetX = 32;
+        this._offsetY = 0;
+        this.worldX--;
+        break;
+    }
+    this.heading = heading;
+    this.isMoving = true;
+  }
+
+  stopWalk() {
+    this.isMoving = false;
+    this._offsetX = 0;
+    this._offsetY = 0;
+  }
+
+  setHeading(heading: Heading) {
+    this.heading = heading;
   }
 }
 

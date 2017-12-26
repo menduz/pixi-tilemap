@@ -1,22 +1,49 @@
 import { graphicsDB, getTextureFromIndex } from "./IndexedGraphics";
 import { pixelPosition, cameraOffset } from '../mzengine/Camera';
 
-export interface IGraphic extends PIXI.Sprite {
-  worldX: number;
-  worldY: number;
-  centerX: number;
-  centerY: number;
+export interface IGraphic extends PIXI.Sprite, WorldPositionCapable, OffsetCapable {
   vertical: boolean;
-  start(): void;
-  stop(): void;
+  centered: boolean;
+  animate(flag: boolean): void;
+}
+
+export interface WorldPositionCapable {
+  readonly worldX: number;
+  readonly worldY: number;
+  setPosition(x: number, y: number): void;
+}
+
+export interface OffsetCapable {
+  readonly offsetX: number;
+  readonly offsetY: number;
+  setOffset(x: number, y: number): void;
 }
 
 export class StaticGraphic extends PIXI.Sprite implements IGraphic {
   centerX = 0;
   centerY = 0;
-
   worldX = 0;
   worldY = 0;
+  private _offsetX = 0;
+  private _offsetY = 0;
+
+  get offsetX() {
+    return this._offsetX;
+  }
+
+  get offsetY() {
+    return this._offsetY;
+  }
+
+  setPosition(x: number, y: number) {
+    this.worldX = x;
+    this.worldY = y;
+  }
+
+  setOffset(x: number, y: number): void {
+    this._offsetX = x;
+    this._offsetY = y;
+  }
 
   private _isVertical = false;
 
@@ -28,20 +55,30 @@ export class StaticGraphic extends PIXI.Sprite implements IGraphic {
     this._isVertical = value;
   }
 
-  start() { }
+  private _isCentered = false;
 
-  stop() { }
-
-  constructor(base: PIXI.Texture) {
-    super(base);
-
-    this.centerX = (this.width / 2 - 16) | 0;
-    this.centerY = (this.height / 2 - 16) | 0;
+  get centered(): boolean {
+    return this._isCentered;
   }
 
+  set centered(value: boolean) {
+    this._isCentered = value;
+  }
+
+
+  animate(a: boolean) { }
+
   renderWebGL(renderer: PIXI.WebGLRenderer) {
-    this.x = Math.floor(this.worldX * 32 - pixelPosition.x - cameraOffset.x);
-    this.y = Math.floor(this.worldY * 32 - pixelPosition.y - cameraOffset.y);
+    this.centerX = -(this.texture.frame.width / 2 - 16) | 0;
+    this.centerY = -(this.texture.frame.height - 16) | 0;
+
+    this.x = Math.floor(this.worldX * 32 - pixelPosition.x - cameraOffset.x + this.offsetX);
+    this.y = Math.floor(this.worldY * 32 - pixelPosition.y - cameraOffset.y + this.offsetY);
+
+    if (this._isCentered) {
+      this.x = Math.floor(this.x + this.centerX);
+      this.y = Math.floor(this.y + this.centerY);
+    }
 
     super.displayObjectUpdateTransform();
     super.renderWebGL(renderer);
@@ -51,9 +88,40 @@ export class StaticGraphic extends PIXI.Sprite implements IGraphic {
 export class AnimatedGraphic extends PIXI.extras.AnimatedSprite implements IGraphic {
   centerX = 0;
   centerY = 0;
-
   worldX = 0;
   worldY = 0;
+
+  private _offsetX = 0;
+  private _offsetY = 0;
+
+  get offsetX() {
+    return this._offsetX;
+  }
+
+  get offsetY() {
+    return this._offsetY;
+  }
+
+
+  setOffset(x: number, y: number): void {
+    this._offsetX = x;
+    this._offsetY = y;
+  }
+
+  setPosition(x: number, y: number) {
+    this.worldX = x;
+    this.worldY = y;
+  }
+
+  private _isCentered = false;
+
+  get centered(): boolean {
+    return this._isCentered;
+  }
+
+  set centered(value: boolean) {
+    this._isCentered = value;
+  }
 
   private _isVertical = false;
 
@@ -65,12 +133,11 @@ export class AnimatedGraphic extends PIXI.extras.AnimatedSprite implements IGrap
     this._isVertical = value;
   }
 
-  start() {
-    if (!this.playing)
+  animate(animate: boolean) {
+    if (animate && !this.playing)
       super.gotoAndPlay(0);
-  }
-  stop() {
-    if (this.playing)
+
+    if (!animate && this.playing)
       super.gotoAndStop(0);
   }
 
@@ -81,14 +148,19 @@ export class AnimatedGraphic extends PIXI.extras.AnimatedSprite implements IGrap
 
     this.animationSpeed = speed;
 
-    this.centerX = (this.width / 2 - 16) | 0;
-    this.centerY = (this.height / 2 - 16) | 0;
   }
 
-
   renderWebGL(renderer: PIXI.WebGLRenderer) {
-    this.x = Math.floor(this.worldX * 32 - pixelPosition.x - cameraOffset.x);
-    this.y = Math.floor(this.worldY * 32 - pixelPosition.y - cameraOffset.y);
+    this.centerX = -(this.texture.frame.width / 2 - 16) | 0;
+    this.centerY = -(this.texture.frame.height - 16) | 0;
+
+    this.x = Math.floor(this.worldX * 32 - pixelPosition.x - cameraOffset.x + this.offsetX);
+    this.y = Math.floor(this.worldY * 32 - pixelPosition.y - cameraOffset.y + this.offsetY);
+
+    if (this._isCentered) {
+      this.x = Math.floor(this.x + this.centerX);
+      this.y = Math.floor(this.y + this.centerY);
+    }
 
     super.displayObjectUpdateTransform();
     super.renderWebGL(renderer);
@@ -106,8 +178,6 @@ export function getGraphicInstance(index: number): IGraphic {
     ret = new AnimatedGraphic(graphic.l.map(getTextureFromIndex), graphic.t / 1600);
   } else {
     ret = new StaticGraphic(getTextureFromIndex(index));
-    ret.width = graphic.w;
-    ret.height = graphic.h;
   }
 
   return ret;

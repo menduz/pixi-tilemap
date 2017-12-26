@@ -2,6 +2,7 @@ import { setTileset } from "../../TileEngine/Tile";
 import { Map } from "../../TileEngine/Map";
 import { update as updateCamera, pixelPosition, cameraOffset } from './Camera';
 import { getGraphicInstance } from "../Graphics/Graphic";
+import { Body } from "../game/Body";
 
 export const now = performance ? () => performance.now() : () => Date.now();
 
@@ -135,15 +136,38 @@ export function start(element: HTMLCanvasElement) {
 
   currentMap.addChild(arbol);
 
-  arbol.worldX = 10;
-  arbol.worldY = 10;
+  arbol.setPosition(10, 10);
 
   let bandera = getGraphicInstance(3877);
 
   currentMap.addChild(bandera);
 
-  bandera.worldX = 1;
-  bandera.worldY = 1;
+  bandera.setPosition(1, 5);
+
+  const char = new Body();
+
+  char.setBody(1);
+  char.setHead(1);
+
+  char.setPosition(0, 0);
+
+  console.log(char);
+
+  currentMap.addChild(char);
+
+  const char2 = new Body();
+
+  char2.setBody(4);
+  char2.setHead(4);
+  char2.setHelmet(4);
+
+  char2.setPosition(0, 0);
+
+  console.log(char2);
+
+  currentMap.addChild(char2);
+
+  setInterval(() => char2.moveByHead(Math.floor(Math.random() * 10) % 4), 1000);
 
   //  arbol.setParent(currentMap);
 }

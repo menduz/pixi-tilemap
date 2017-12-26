@@ -3,7 +3,7 @@
 namespace Arduz {
   let _renderer: PIXI.WebGLRenderer;
   let stage: PIXI.Container = null;
-  let tilemap: RPGMap.Tilemap = null;
+  let tilemap: TileEngine.Map = null;
 
   let scale = +(getOptionValue('scale') || 1);
   let resolution = +(getOptionValue('resolution') || window.devicePixelRatio);
@@ -81,20 +81,18 @@ namespace Arduz {
 
   function loadMap(map: string) {
     const loader = new PIXI.loaders.Loader();
-    const width = 250;
-    const height = 250;
+    const width = 2500;
+    const height = 2500;
     const data = generateEmptyMap(width, height);
 
-    const tilesets = ['1', '0'];
+    const tilesets = ['0.1'];
 
     tilesets.forEach($ => {
       const name = `tileset/${$}`;
-      if (!PIXI.utils.TextureCache[name])
-        loader.add(name, 'cdn/grh/tilesets/' + $ + ".png");
+      loader.add(name, 'cdn/grh/tilesets/' + $ + ".png");
     });
 
     loader.load(function (loader, resources) {
-
       tilesets.forEach($ => {
         const name = `tileset/${$}`;
         console.log(name, resources[name]);
@@ -115,15 +113,17 @@ namespace Arduz {
 
   }
 
-  function tileNumber(x: number, y: number) {
-    return x * 16 + y;
+  function tileNumber(x: number, y: number, tileset: number) {
+    return TileEngine.setTileset(x * 16 + y, tileset);
   }
+
 
   function generateEmptyMap(width: number, height: number) {
     let data: number[] = Array(width * height).map(() => 0);
+    const z = 0;
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        data[y * width + x] = tileNumber(x % 4, y % 4) | 0x10000 * 1;
+        data[(z * height + y) * width + x] = tileNumber(x % 4, y % 4, 0);
       }
     }
     return data;
@@ -133,7 +133,7 @@ namespace Arduz {
   export function start() {
     setupView();
 
-    tilemap = new RPGMap.Tilemap();
+    tilemap = new TileEngine.Map();
     stage = new PIXI.Container();
     stage.addChild(tilemap);
     resizeTilemap();

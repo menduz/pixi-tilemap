@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-  <title>Tiles demo</title>
+  <title>Arduz</title>
   <style>
     body {
       background: white;
@@ -43,17 +43,18 @@
       pointer-events: none;
     }
   </style>
-
   <script src="lib/jquery.min.js"></script>
+  <script src="https://npmcdn.com/amd.ts@1.1.1/build/amd.min.js"></script>
   <script src="lib/pixi-4.5.3.js"></script>
-  <script src="bin/pixi-tilemap.js"></script>
+
 </head>
 
-<body onload="Arduz.start()">
+<body>
   <canvas id="backCanvas" class="game-canvas"></canvas>
   <script>
     (function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = '//rawgit.com/mrdoob/stats.js/master/build/stats.min.js'; document.head.appendChild(script); })()
   </script>
+  <script src="bin/arduz.js"></script>
 </body>
 
 </html>

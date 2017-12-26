@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "module": "none",
+    "module": "amd",
     "target": "es2015",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "outFile": "bin/pixi-tilemap.js",
+    "outFile": "bin/arduz.js",
     "sourceMap": true,
     "inlineSources": true,
     "declaration": true,

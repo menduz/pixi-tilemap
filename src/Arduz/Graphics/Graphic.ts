@@ -135,19 +135,19 @@ export class AnimatedGraphic extends PIXI.extras.AnimatedSprite implements IGrap
 
   animate(animate: boolean) {
     if (animate && !this.playing)
-      super.gotoAndPlay(0);
+      super.play();
 
     if (!animate && this.playing)
+      super.stop();
+
+    if (!animate && !this.playing)
       super.gotoAndStop(0);
   }
 
   constructor(bases: PIXI.Texture[], speed: number = 0.5) {
-    super(bases, true);
-
-    this.gotoAndStop(0);
+    super(bases);
 
     this.animationSpeed = speed;
-
   }
 
   renderWebGL(renderer: PIXI.WebGLRenderer) {

@@ -60,7 +60,7 @@ export class Body extends PIXI.Container implements OffsetCapable, WorldPosition
   headOffsetX = 0;
   headOffsetY = 0;
 
-  speed: number = 0.5;
+  speed: number = 1;
 
   private _isMoving = false;
 
@@ -70,12 +70,6 @@ export class Body extends PIXI.Container implements OffsetCapable, WorldPosition
 
   set isMoving(value: boolean) {
     this._isMoving = !!value;
-
-    this.head && (this.head.animating = value);
-    this.helmet && (this.helmet.animating = value);
-    this.body && (this.body.animating = value);
-    this.rightHand && (this.rightHand.animating = value);
-    this.leftHand && (this.leftHand.animating = value);
   }
 
   setHead(headIndex: number) {
@@ -139,24 +133,28 @@ export class Body extends PIXI.Container implements OffsetCapable, WorldPosition
   update(elapsedTime: number) {
     let didSomethingChange = true;
     if (this._offsetX > 0) {
-      this._offsetX -= (elapsedTime * this.speed) | 0;
+      this._offsetX = (this._offsetX - elapsedTime * this.speed) | 0;
       if (this._offsetX <= 0) {
         this.isMoving = false;
+        this._offsetX = 0;
       }
     } else if (this._offsetX < 0) {
-      this._offsetX += (elapsedTime * this.speed) | 0;
+      this._offsetX = (this._offsetX + elapsedTime * this.speed) | 0;
       if (this._offsetX >= 0) {
         this.isMoving = false;
+        this._offsetX = 0;
       }
     } else if (this._offsetY > 0) {
-      this._offsetY -= (elapsedTime * this.speed) | 0;
+      this._offsetY = (this._offsetY - elapsedTime * this.speed) | 0;
       if (this._offsetY <= 0) {
         this.isMoving = false;
+        this._offsetY = 0;
       }
     } else if (this._offsetY < 0) {
-      this._offsetY += (elapsedTime * this.speed) | 0;
+      this._offsetY = (this._offsetY + elapsedTime * this.speed) | 0;
       if (this._offsetY >= 0) {
         this.isMoving = false;
+        this._offsetY = 0;
       }
     } else {
       didSomethingChange = false;
@@ -165,6 +163,26 @@ export class Body extends PIXI.Container implements OffsetCapable, WorldPosition
     if (didSomethingChange) {
       this.fixPositions();
     }
+  }
+
+  idleCounter = 0;
+
+  renderWebGL(renderer: PIXI.WebGLRenderer) {
+    if (this.isMoving) {
+      this.idleCounter = 0;
+    } else {
+      this.idleCounter++;
+    }
+
+    const animate = this.idleCounter < 8;
+
+    this.head && (this.head.animating = animate);
+    this.helmet && (this.helmet.animating = animate);
+    this.body && (this.body.animating = animate);
+    this.rightHand && (this.rightHand.animating = animate);
+    this.leftHand && (this.leftHand.animating = animate);
+
+    super.renderWebGL(renderer);
   }
 
   moveByHead(heading: Heading) {

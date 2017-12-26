@@ -1,8 +1,9 @@
 import { setTileset } from "../../TileEngine/Tile";
 import { Map } from "../../TileEngine/Map";
-import { update as updateCamera, pixelPosition, cameraOffset } from './Camera';
+import { update as updateCamera, pixelPosition, cameraOffset, setCameraPosition } from './Camera';
 import { getGraphicInstance } from "../Graphics/Graphic";
 import { Body } from "../game/Body";
+import { getHeadingTo } from "../game/Input";
 
 export const now = performance ? () => performance.now() : () => Date.now();
 
@@ -14,6 +15,8 @@ export let stage: PIXI.Container = null;
 export let currentMap: Map = null;
 export let engineElapsedTime: number = 0;
 export const engineBaseSpeed = 0.16;
+
+export let currentChar: Body = null;
 
 let scale = +(getOptionValue('scale') || 1);
 let resolution = +(getOptionValue('resolution') || window.devicePixelRatio);
@@ -60,9 +63,23 @@ function update() {
   last = tick;
 
   if (stage) {
-    updateCamera(engineElapsedTime, stage.filterArea.width, stage.filterArea.height);
+    const headingTo = getHeadingTo();
+
+    if (headingTo != null && currentChar && !currentChar.isMoving) {
+      currentChar.moveByHead(headingTo);
+    }
+
+    cameraOffset.x = (-stage.filterArea.width / 2) | 0;
+    cameraOffset.y = (-stage.filterArea.height / 2) | 0;
+
+    if (currentChar) {
+      setCameraPosition(currentChar);
+    } else {
+      updateCamera(engineElapsedTime);
+    }
 
     currentMap.origin.set(pixelPosition.x + cameraOffset.x, pixelPosition.y + cameraOffset.y);
+
     currentMap.update(engineElapsedTime);
 
     _renderer.render(stage);
@@ -144,22 +161,27 @@ export function start(element: HTMLCanvasElement) {
 
   bandera.setPosition(1, 5);
 
-  const char = new Body();
 
-  char.setBody(1);
-  char.setHead(1);
+  currentChar = new Body();
 
-  char.setPosition(0, 0);
+  currentChar.setBody(1);
+  currentChar.setHead(1);
 
-  console.log(char);
+  currentChar.setPosition(0, 0);
 
-  currentMap.addChild(char);
+  console.log(currentChar);
+
+
+
+
+
+  currentMap.addChild(currentChar);
 
   const char2 = new Body();
 
-  char2.setBody(4);
+  char2.setBody(2);
   char2.setHead(4);
-  char2.setHelmet(4);
+  char2.setHelmet(6);
 
   char2.setPosition(0, 0);
 
@@ -167,7 +189,7 @@ export function start(element: HTMLCanvasElement) {
 
   currentMap.addChild(char2);
 
-  setInterval(() => char2.moveByHead(Math.floor(Math.random() * 10) % 4), 1000);
+  setInterval(() => char2.moveByHead(Math.floor(Math.random() * 10) % 4), 500);
 
   //  arbol.setParent(currentMap);
 }

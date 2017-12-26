@@ -1,5 +1,5 @@
 import { Heading } from '../Enums';
-import { EventDispatcher } from '../../Core/EventDispatcher';
+import { WorldPositionCapable, OffsetCapable } from '../Graphics/Graphic';
 
 export let worldTransform = PIXI.Matrix.IDENTITY;
 
@@ -34,10 +34,12 @@ export function setSpeed(freq: number) {
   velCamara = freq || 1;
 }
 
-export function update(elapsedTime: number, width: number, height: number) {
+export function setCameraPosition(pos: WorldPositionCapable & OffsetCapable) {
+  pixelPosition.x = (pos.worldX * 32 + pos.offsetX) | 0;
+  pixelPosition.y = (pos.worldY * 32 + pos.offsetY) | 0;
+}
 
-  cameraOffset.x = (-width / 2) | 0;
-  cameraOffset.y = (-height / 2) | 0;
+export function update(elapsedTime: number) {
 
   if (isMoving) {
     if (AddX > 0) {
@@ -106,8 +108,6 @@ export function moveCamera(heading: Heading) {
         position.x--;
         break;
     }
-    observable.trigger('moveByHead', heading, position.x, position.y);
-    observable.trigger('position', position.x, position.y, pixelPosition);
   }
   isMoving = true;
 }
@@ -120,5 +120,3 @@ export function setPos(_x: number, _y: number) {
   pixelPosition.x = position.x * 32;
   pixelPosition.y = position.y * 32;
 }
-
-export let observable = new EventDispatcher();

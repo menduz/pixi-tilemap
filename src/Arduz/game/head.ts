@@ -1,41 +1,31 @@
-import * as grh from './grh';
-import { Heading } from '../Enums';
+import { WearableGraphic } from '../Graphics/WearableGraphic';
+import { getGraphicInstance } from '../Graphics/Graphic';
 
 declare let $: any;
 
-let DB: { [key: string]: Head } = {};
-let DBHelmets: { [key: string]: Head } = {};
+export type HeadDBEntry = {
+  i: number;
+  g: Dictionary<number>;
+};
 
-let heads: { [key: string]: any } = {};
-let helmets: { [key: string]: any } = {};
+let heads: Dictionary<HeadDBEntry> = {};
+let helmets: Dictionary<HeadDBEntry> = {};
 
-export class Head {
-  grh: { [key: number]: grh.Graphic } = null;
-
-  constructor(head: { g: any }) {
-    this.grh = {
-      0: grh.get(head.g[1]),
-      1: grh.get(head.g[2]),
-      2: grh.get(head.g[3]),
-      3: grh.get(head.g[4])
-    };
-  }
-
-  render(x: number, y: number, heading: Heading) {
-    this.grh && this.grh[heading] && this.grh[heading].quiet(x - this.grh[heading].centerX, y);
-  }
-
-  renderBottomAligned(x: number, y: number, heading: Heading) {
-    this.grh && this.grh[heading] && this.grh[heading].quiet(x - this.grh[heading].centerX, y - this.grh[heading].height);
-  }
+export function getHead(index: number): WearableGraphic {
+  return heads[index] && fromDB(heads[index]) || null;
 }
 
-export function get(index: number): Head {
-  return heads[index] && (DB[index] = DB[index] || new Head(heads[index])) || null;
+export function getHelmet(index: number): WearableGraphic {
+  return helmets[index] && fromDB(helmets[index]) || null;
 }
 
-export function getHelmet(index: number): Head {
-  return helmets[index] && (DBHelmets[index] = DBHelmets[index] || new Head(helmets[index])) || null;
+function fromDB(item: HeadDBEntry) {
+  return new WearableGraphic([
+    getGraphicInstance(item.g[1]),
+    getGraphicInstance(item.g[2]),
+    getGraphicInstance(item.g[3]),
+    getGraphicInstance(item.g[4])
+  ]);
 }
 
 function parseInto(obj: any, e: string) {
@@ -43,7 +33,7 @@ function parseInto(obj: any, e: string) {
   let grhHeader = /Head(1|2|3|4)=(\d+)/;
 
   let data = e.split(/(\n)/g);
-  let actualHead: any = null;
+  let actualHead: HeadDBEntry = null;
 
   for (let i in data) {
     let d = data[i].trim();
@@ -51,7 +41,7 @@ function parseInto(obj: any, e: string) {
     if (t = headHeader.exec(d)) {
       actualHead = {
         g: { 1: 0, 2: 0, 3: 0, 4: 0 },
-        i: t[1]
+        i: parseInt(t[1])
       };
       obj[t[1]] = actualHead;
     } else if (t = grhHeader.exec(d)) {
@@ -60,24 +50,30 @@ function parseInto(obj: any, e: string) {
   }
 }
 
-export let loadHeads = function (url: string, cb: () => any) {
-  $.ajax({
-    url: url || 'cdn/indexes/cabezas.txt',
-    method: 'GET',
-    success: function (e: any) {
-      parseInto(heads, e);
-      cb && cb();
-    }
+export function loadHeads(url: string) {
+  return new Promise((ok, err) => {
+    $.ajax({
+      url: url || 'cdn/indexes/cabezas.txt',
+      method: 'GET',
+      success: function (e: any) {
+        parseInto(heads, e);
+        ok();
+      },
+      error: err
+    });
   });
-};
+}
 
-export let loadHelmets = function (url: string, cb: () => any) {
-  $.ajax({
-    url: url || 'cdn/indexes/cascos.txt',
-    method: 'GET',
-    success: function (e: any) {
-      parseInto(helmets, e);
-      cb && cb();
-    }
+export function loadHelmets(url: string) {
+  return new Promise((ok, err) => {
+    $.ajax({
+      url: url || 'cdn/indexes/cascos.txt',
+      method: 'GET',
+      success: function (e: any) {
+        parseInto(helmets, e);
+        ok();
+      },
+      error: err
+    });
   });
-};
+}

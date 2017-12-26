@@ -1,5 +1,7 @@
+import { ArduzPlugins } from "./TileRenderer";
 
-class GraphicsLayer extends PIXI.Graphics {
+
+export class GraphicsLayer extends PIXI.Graphics {
   z: number;
   zIndex: number;
 
@@ -10,12 +12,12 @@ class GraphicsLayer extends PIXI.Graphics {
 
   renderCanvas(renderer: PIXI.CanvasRenderer) {
     let wt: PIXI.Matrix = null;
-    if (renderer.plugins.tilemap.dontUseTransform) {
+    if ((renderer.plugins as ArduzPlugins).tilemap.dontUseTransform) {
       wt = this.transform.worldTransform;
       this.transform.worldTransform = PIXI.Matrix.IDENTITY;
     }
-    renderer.plugins.graphics.render(this);
-    if (renderer.plugins.tilemap.dontUseTransform) {
+    (renderer.plugins as ArduzPlugins).graphics.render(this);
+    if ((renderer.plugins as ArduzPlugins).tilemap.dontUseTransform) {
       this.transform.worldTransform = wt;
     }
     renderer.context.globalAlpha = 1.0;
@@ -23,7 +25,7 @@ class GraphicsLayer extends PIXI.Graphics {
 
   renderWebGL(renderer: PIXI.WebGLRenderer) {
     if (!this._webGL[renderer.CONTEXT_UID])
-      this.dirty = true;
+      this.dirty = 1;
     super.renderWebGL(renderer);
   }
 

@@ -1,6 +1,7 @@
 import { setTileset } from "../../TileEngine/Tile";
 import { Map } from "../../TileEngine/Map";
-import { update as updateCamera, pos as cameraPos } from './Camera';
+import { update as updateCamera, pixelPosition, cameraOffset } from './Camera';
+import { getGraphicInstance } from "../Graphics/Graphic";
 
 export const now = performance ? () => performance.now() : () => Date.now();
 
@@ -42,10 +43,6 @@ function getOptionValue(name: string) {
   return null;
 }
 
-// function isOptionValid(name: string) {
-//   return location.search.slice(1).split('&').indexOf(name) >= 0;
-// }
-
 function setupView(element: HTMLCanvasElement) {
   _renderer = PIXI.autoDetectRenderer(element.width, element.height, { view: element, resolution: resolution, antialias: true, autoResize: true }) as PIXI.WebGLRenderer;
   resize();
@@ -62,11 +59,10 @@ function update() {
   last = tick;
 
   if (stage) {
-    updateCamera(engineElapsedTime);
+    updateCamera(engineElapsedTime, stage.filterArea.width, stage.filterArea.height);
 
-    currentMap.update();
-
-    currentMap.origin.set(cameraPos.x + 16, cameraPos.y + 16);
+    currentMap.origin.set(pixelPosition.x + cameraOffset.x, pixelPosition.y + cameraOffset.y);
+    currentMap.update(engineElapsedTime);
 
     _renderer.render(stage);
     _renderer.gl.flush();
@@ -87,10 +83,9 @@ function loadMap(map: string) {
     loader.add(name, 'cdn/grh/tilesets/' + $ + ".png");
   });
 
-  loader.load(function (loader, resources) {
+  loader.load(function (loader: PIXI.loaders.Loader, resources: any) {
     tilesets.forEach($ => {
       const name = `tileset/${$}`;
-      console.log(name, resources[name]);
       const tex = resources[name] && resources[name].texture;
       currentMap.bitmaps.push(tex);
       if (tex) tex.baseTexture.mipmap = true;
@@ -108,8 +103,8 @@ function loadMap(map: string) {
 
 }
 
-function tileNumber(x: number, y: number, tileset: number) {
-  return setTileset(x * 16 + y, tileset);
+function tileNumber(x: number, y: number) {
+  return x * 16 + y;
 }
 
 
@@ -118,7 +113,7 @@ function generateEmptyMap(width: number, height: number) {
   const z = 0;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      data[(z * height + y) * width + x] = tileNumber(x % 4, y % 4, 0);
+      data[(z * height + y) * width + x] = setTileset(tileNumber(x % 4, y % 4), 0);
     }
   }
   return data;
@@ -133,14 +128,22 @@ export function start(element: HTMLCanvasElement) {
   stage.addChild(currentMap);
   resizeTilemap();
 
+
   loadMap('Home');
 
-  // rpgMakerLoader.load('Map001', function (err, map) {
-  //   if (err) return;
-  //   tilemap = map;
-  //   tilemap.roundPixels = (scale == 1);
-  //   stage = new PIXI.Container();
-  //   stage.addChild(tilemap);
-  //   resizeTilemap();
-  // });
+  let arbol = getGraphicInstance(3);
+
+  currentMap.addChild(arbol);
+
+  arbol.worldX = 10;
+  arbol.worldY = 10;
+
+  let bandera = getGraphicInstance(3877);
+
+  currentMap.addChild(bandera);
+
+  bandera.worldX = 1;
+  bandera.worldY = 1;
+
+  //  arbol.setParent(currentMap);
 }

@@ -1,30 +1,23 @@
 import { start } from "./Arduz/mzengine/GameLoop";
 import { initRenderer } from "./TileEngine/TileRenderer";
-import { loadGraphics } from "./Arduz/game/grh";
-import { loadBodies } from "./Arduz/game/body";
-import { loadHeads, loadHelmets } from "./Arduz/game/head";
+import { loadBodies } from "./Arduz/game/Body";
+import { loadHeads, loadHelmets } from "./Arduz/game/Head";
 import { initializeCharInput } from "./Arduz/game/Input";
+import { loadGraphics } from "./Arduz/Graphics/IndexedGraphics";
 
-try {
+
+
+async function startGame() {
   initRenderer();
 
   const element: HTMLCanvasElement = document.querySelector('#backCanvas');
 
-  loadGraphics('cdn/indexes/graficos.txt', () => {
-    console.log('Graphics loaded.');
-  });
-
-  loadBodies('cdn/indexes/cuerpos.txt', () => {
-    console.log('Bodies loaded.');
-  });
-
-  loadHeads('cdn/indexes/cabezas.txt', () => {
-    console.log('Heads loaded.');
-  });
-
-  loadHelmets('cdn/indexes/cascos.txt', () => {
-    console.log('Helmets loaded.');
-  });
+  await Promise.all([
+    loadGraphics('cdn/indexes/graficos.txt'),
+    loadBodies('cdn/indexes/cuerpos.txt'),
+    loadHeads('cdn/indexes/cabezas.txt'),
+    loadHelmets('cdn/indexes/cascos.txt')
+  ]);
 
   // var myChara = BodyFactory(1, 5, 45);
   // char.chars.push(myChara);
@@ -43,8 +36,16 @@ try {
 
   initializeCharInput();
   start(element);
-} catch (e) {
-  console.error('Error during game initialization');
-  console.error(e);
-  throw e;
+
 }
+
+startGame().then(
+  () => {
+    console.log('Game started');
+  },
+  (e) => {
+    console.error('Error during game initialization');
+    console.error(e);
+    throw e;
+  }
+);

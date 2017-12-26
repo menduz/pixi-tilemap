@@ -1,13 +1,27 @@
 import { Heading } from '../Enums';
 import { EventDispatcher } from '../../Core/EventDispatcher';
 
-let x = 0, y = 0;
+export let worldTransform = PIXI.Matrix.IDENTITY;
+
+export const position = {
+  x: 0,
+  y: 0
+};
+
+export const pixelPosition = {
+  x: 0,
+  y: 0
+};
+
+export const cameraOffset = {
+  x: 0,
+  y: 0
+};
 
 export let isMoving = false;
 
 let AddX = 0, AddY = 0;
 
-export let pos = { x: 0, y: 0 };
 export let velCamara = 1; // 192 / 1000;
 
 let _check_camera: () => void = null;
@@ -17,10 +31,14 @@ export function bindFn(cb: () => void) {
 }
 
 export function setSpeed(freq: number) {
-  velCamara = freq || 192 / 1000;
+  velCamara = freq || 1;
 }
 
-export function update(elapsedTime: number) {
+export function update(elapsedTime: number, width: number, height: number) {
+
+  cameraOffset.x = (-width / 2) | 0;
+  cameraOffset.y = (-height / 2) | 0;
+
   if (isMoving) {
     if (AddX > 0) {
       AddX -= elapsedTime * velCamara;
@@ -60,8 +78,8 @@ export function update(elapsedTime: number) {
     _check_camera();
   }
 
-  pos.x = (x * 32 - AddX) | 0;
-  pos.y = (y * 32 - AddY) | 0;
+  pixelPosition.x = (position.x * 32 - AddX) | 0;
+  pixelPosition.y = (position.y * 32 - AddY) | 0;
 }
 
 export function moveCamera(heading: Heading) {
@@ -70,44 +88,37 @@ export function moveCamera(heading: Heading) {
       case Heading.South:
         AddY += 32;
         AddX = 0;
-        y++;
+        position.y++;
         break;
       case Heading.East:
         AddX += 32;
         AddY = 0;
-        x++;
+        position.x++;
         break;
       case Heading.North:
         AddY -= 32;
         AddX = 0;
-        y--;
+        position.y--;
         break;
       case Heading.West:
         AddX -= 32;
         AddY = 0;
-        x--;
+        position.x--;
         break;
     }
-    observable.trigger('moveByHead', heading, x, y);
-    observable.trigger('position', x, y, pos);
+    observable.trigger('moveByHead', heading, position.x, position.y);
+    observable.trigger('position', position.x, position.y, pixelPosition);
   }
   isMoving = true;
 }
 
 export function setPos(_x: number, _y: number) {
-  x = _x | 0;
-  y = _y | 0;
+  position.x = _x | 0;
+  position.y = _y | 0;
   AddY = AddX = 0;
   isMoving = false;
-  pos.x = x * 32;
-  pos.y = y * 32;
-}
-
-export function getPos() {
-  return {
-    x,
-    y
-  };
+  pixelPosition.x = position.x * 32;
+  pixelPosition.y = position.y * 32;
 }
 
 export let observable = new EventDispatcher();

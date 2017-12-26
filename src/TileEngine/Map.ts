@@ -2,6 +2,7 @@ import { ZLayer } from "./ZLayer";
 import { CompositeRectTileLayer } from "./CompositeRectTileLayer";
 import { RectTileLayer } from "./RectTileLayer";
 import { getTile, getTileset } from "./Tile";
+import { ArduzPlugins } from "./TileRenderer";
 
 
 // -----------------------------------------------------------------------------
@@ -208,12 +209,13 @@ export class Map extends PIXI.Container {
    *
    * @method update
    */
-  update() {
+  update(deltaTime: number) {
     this.animationCount++;
     this.animationFrame = Math.floor(this.animationCount / 30);
+
     this.children.forEach(function (child: any) {
       if (child.update) {
-        child.update();
+        child.update(deltaTime);
       }
     });
   }
@@ -327,8 +329,8 @@ export class Map extends PIXI.Container {
   _hackRenderer(renderer: PIXI.WebGLRenderer) {
     let af = this.animationFrame % 4;
     if (af == 3) af = 1;
-    renderer.plugins.tilemap.tileAnim[0] = af * this._tileWidth;
-    renderer.plugins.tilemap.tileAnim[1] = (this.animationFrame % 3) * this._tileHeight;
+    (renderer.plugins as any as ArduzPlugins).tilemap.tileAnim[0] = af * this._tileWidth;
+    (renderer.plugins as any as ArduzPlugins).tilemap.tileAnim[1] = (this.animationFrame % 3) * this._tileHeight;
     return renderer;
   }
 

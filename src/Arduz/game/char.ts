@@ -1,37 +1,59 @@
-import * as bodies from './body';
+/// <reference types="pixi-display" />
 import * as Camera from '../mzengine/Camera';
-
-import * as state from '../state';
+import { Body } from './Body';
 import { Heading } from '../Enums';
 import { currentMap } from '../mzengine/GameLoop';
-import { renderText } from './Texts';
 
 export class ClientPlayer {
+  speed: number = 1;
   x: number = 0;
   y: number = 0;
   heading: Heading;
 
-  body = new bodies.Body();
-
-  moving = false;
+  body = new Body();
 
   private AddX: number = 0;
   private AddY: number = 0;
-
-  private headText: string;
-  private headTextColor = "#aaa";
 
   // private cleanChat = mz.delayer(() => this.headText = null, 15000);
 
   key = (Math.random() * 100000).toString(16);
 
   setPos(x: number, y: number) {
-    this.moving = false;
+    this.body.isMoving = false;
     this.x = x;
     this.y = y;
     this.AddX = 0;
     this.AddY = 0;
+    this.body.setTransform(
+      this.x * currentMap.tileWidth - this.AddX,
+      this.y * currentMap.tileHeight - this.AddY
+    );
+  }
 
+  update(elapsedTime: number) {
+
+    if (this.AddX > 0) {
+      this.AddX -= elapsedTime * Camera.velCamara * this.speed;
+      if (this.AddX <= 0) {
+        this.body.isMoving = false;
+      }
+    } else if (this.AddX < 0) {
+      this.AddX += elapsedTime * Camera.velCamara * this.speed;
+      if (this.AddX >= 0) {
+        this.body.isMoving = false;
+      }
+    } else if (this.AddY > 0) {
+      this.AddY -= elapsedTime * Camera.velCamara * this.speed;
+      if (this.AddY <= 0) {
+        this.body.isMoving = false;
+      }
+    } else if (this.AddY < 0) {
+      this.AddY += elapsedTime * Camera.velCamara * this.speed;
+      if (this.AddY >= 0) {
+        this.body.isMoving = false;
+      }
+    }
   }
 
   setChat(text: string) {
@@ -39,64 +61,39 @@ export class ClientPlayer {
   }
 
   protected setText(text: string) {
-    this.headText = text;
+    // this.headText = text;
     // this.cleanChat.cancel();
     // this.cleanChat();
   }
 
-  render(elapsedTime: number, x?: number, y?: number) {
+  // render(renderer: PIXI.WebGLRenderer, elapsedTime: number, x?: number, y?: number) {
 
-    if (arguments.length == 1) {
-      x = this.x * currentMap.tileWidth - this.AddX;
-      y = this.y * currentMap.tileHeight - this.AddY;
-    }
+  //   if (arguments.length == 2) {
+  //     x = this.x * currentMap.tileWidth - this.AddX;
+  //     y = this.y * currentMap.tileHeight - this.AddY;
+  //   }
 
-    if (this.key == state.playerKey) {
-      x = Camera.pos.x;
-      y = Camera.pos.y;
-    }
-
-    if (this.AddX > 0) {
-      this.AddX -= elapsedTime * Camera.velCamara;
-      if (this.AddX <= 0) {
-        this.moving = false;
-      }
-    }
-    if (this.AddX < 0) {
-      this.AddX += elapsedTime * Camera.velCamara;
-      if (this.AddX >= 0) {
-        this.moving = false;
-      }
-    }
-    if (this.AddY > 0) {
-      this.AddY -= elapsedTime * Camera.velCamara;
-      if (this.AddY <= 0) {
-        this.moving = false;
-      }
-    }
-    if (this.AddY < 0) {
-      this.AddY += elapsedTime * Camera.velCamara;
-      if (this.AddY >= 0) {
-        this.moving = false;
-      }
-    }
-
-    /*
-		var tmpx = x - ((AnchoCuerpos / 2) | 0) + 16;
-		var tmpy = y - AltoCuerpos + 16;
+  //   if (this.key == state.playerKey) {
+  //     x = Camera.pos.x;
+  //     y = Camera.pos.y;
+  //   }
 
 
-		this.body[_heading][
-			!enMovimiento ? 0 : ((engine.tick / 60) | 0) % this.body[_heading].length
-		](tmpx,tmpy);
+  //   /*
+  // 	var tmpx = x - ((AnchoCuerpos / 2) | 0) + 16;
+  // 	var tmpy = y - AltoCuerpos + 16;
 
-		this.head[_heading](x + 8,tmpy - 8);
-		*/
+  // 	this.body[_heading][
+  // 		!enMovimiento ? 0 : ((engine.tick / 60) | 0) % this.body[_heading].length
+  // 	](tmpx,tmpy);
 
-    this.body && this.body.render(x, y, this.heading, this.moving, false);
+  // 	this.head[_heading](x + 8,tmpy - 8);
+  // 	*/
 
-    this.headText && this.headText.length && renderText(this.headText, x + 16, y - 45, true, this.headTextColor);
-  }
+  //   this.body && this.body.render(renderer, x, y, this.heading, this.body.isMoving, false);
+
+  //   this.headText && this.headText.length && renderText(this.headText, x + 16, y - 45, true, this.headTextColor);
+  // }
 
   moveByHead(heading: Heading) {
     switch (heading) {
@@ -122,10 +119,10 @@ export class ClientPlayer {
         break;
     }
     this.heading = heading;
-    this.moving = true;
+    this.body.isMoving = true;
   }
   frenar() {
-    this.moving = false;
+    this.body.isMoving = false;
     this.AddX = 0;
     this.AddY = 0;
   }
@@ -134,4 +131,4 @@ export class ClientPlayer {
   }
 }
 
-export let chars: { [key: string]: ClientPlayer } = {};
+export let chars = new PIXI.display.Group(0, (x: any) => x.y);

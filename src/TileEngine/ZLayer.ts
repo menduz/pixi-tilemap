@@ -1,4 +1,5 @@
 import { CompositeRectTileLayer } from "./CompositeRectTileLayer";
+import { ArduzPlugins } from "./TileRenderer";
 
 export class ZLayer extends PIXI.Container {
   constructor(tilemap: PIXI.Container, zIndex: number) {
@@ -34,7 +35,7 @@ export class ZLayer extends PIXI.Container {
       buf = this.canvasBuffer = document.createElement('canvas');
       tempRender = this._tempRender = new PIXI.CanvasRenderer(100, 100, { view: buf });
       tempRender.context = tempRender.rootContext;
-      tempRender.plugins.tilemap.dontUseTransform = true;
+      (tempRender.plugins as ArduzPlugins).tilemap.dontUseTransform = true;
     }
     if (buf.width != tilemap._layerWidth || buf.height != tilemap._layerHeight) {
       buf.width = tilemap._layerWidth;

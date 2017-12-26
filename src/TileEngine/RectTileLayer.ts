@@ -1,3 +1,5 @@
+import { ArduzPlugins } from "./TileRenderer";
+
 
 export class RectTileLayer extends PIXI.Container {
   constructor(zIndex: number, texture: PIXI.Texture | Array<PIXI.Texture>) {
@@ -40,8 +42,8 @@ export class RectTileLayer extends PIXI.Container {
       let x2 = points[i + 2], y2 = points[i + 3];
       let w = points[i + 4];
       let h = points[i + 5];
-      x1 += points[i + 6] * renderer.plugins.tilemap.tileAnim[0];
-      y1 += points[i + 7] * renderer.plugins.tilemap.tileAnim[1];
+      x1 += points[i + 6] * (renderer.plugins as ArduzPlugins).tilemap.tileAnim[0];
+      y1 += points[i + 7] * (renderer.plugins as ArduzPlugins).tilemap.tileAnim[1];
       let textureId = points[i + 8];
       if (textureId >= 0) {
         renderer.context.drawImage(this.textures[textureId].baseTexture.source, x1, y1, w, h, x2, y2, w, h);
@@ -118,7 +120,7 @@ export class RectTileLayer extends PIXI.Container {
     let points = this.pointsBuf;
     if (points.length === 0) return;
     let rectsCount = points.length / 9;
-    let tile = renderer.plugins.tilemap;
+    let tile = (renderer.plugins as any as ArduzPlugins).tilemap;
     let gl = renderer.gl;
 
     tile.checkIndexBuffer(rectsCount);

@@ -25,6 +25,8 @@ export class TileRenderer extends PIXI.ObjectRenderer {
   static vbAutoincrement = 0;
   static SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
   static DO_CLEAR = false;
+
+  dontUseTransform: boolean;
   renderer: PIXI.WebGLRenderer;
   gl: WebGLRenderingContext;
   vbs: { [key: string]: any; } = {};
@@ -133,7 +135,7 @@ export class TileRenderer extends PIXI.ObjectRenderer {
     // sorry, nothing
   }
 
-  getVb(id: string) {
+  getVb(id: string | number) {
     this.checkLeaks();
     const vb = this.vbs[id];
     if (vb) {
@@ -200,7 +202,7 @@ export class TileRenderer extends PIXI.ObjectRenderer {
     }
   }
 
-  getShader(): TilemapShader {
+  getShader(): RectTileShader {
     return this.rectShader;
   }
 
@@ -213,4 +215,9 @@ export class TileRenderer extends PIXI.ObjectRenderer {
 
 export function initRenderer() {
   PIXI.WebGLRenderer.registerPlugin('tilemap', TileRenderer);
+}
+
+export interface ArduzPlugins extends PIXI.CanvasRendererPlugins {
+  tilemap: TileRenderer;
+  graphics: PIXI.GraphicsRenderer;
 }

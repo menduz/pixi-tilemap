@@ -69,16 +69,16 @@ function update() {
       currentChar.moveByHead(headingTo);
     }
 
-    cameraOffset.x = (-stage.filterArea.width / 2) | 0;
-    cameraOffset.y = (-stage.filterArea.height / 2) | 0;
+    cameraOffset.x = Math.floor(-stage.filterArea.width / 2);
+    cameraOffset.y = Math.floor(-stage.filterArea.height / 2);
+
+    currentMap.update(engineElapsedTime);
 
     if (currentChar) {
       setCameraPosition(currentChar);
     } else {
       updateCamera(engineElapsedTime);
     }
-
-    currentMap.update(engineElapsedTime);
 
     currentMap.origin.set(pixelPosition.x + cameraOffset.x, pixelPosition.y + cameraOffset.y);
 

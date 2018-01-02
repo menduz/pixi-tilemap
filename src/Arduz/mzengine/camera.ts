@@ -35,8 +35,8 @@ export function setSpeed(freq: number) {
 }
 
 export function setCameraPosition(pos: WorldPositionCapable & OffsetCapable) {
-  pixelPosition.x = (pos.worldX * 32 + pos.offsetX) | 0;
-  pixelPosition.y = (pos.worldY * 32 + pos.offsetY) | 0;
+  pixelPosition.x = Math.floor(pos.worldX * 32 + pos.offsetX);
+  pixelPosition.y = Math.floor(pos.worldY * 32 + pos.offsetY);
 }
 
 export function update(elapsedTime: number) {

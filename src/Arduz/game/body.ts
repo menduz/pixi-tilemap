@@ -108,25 +108,28 @@ export class Body extends PIXI.Container implements OffsetCapable, WorldPosition
   }
 
   fixPositions() {
+    const oX = (this.offsetX | 0);
+    const oY = (this.offsetY | 0);
+
     if (this.head) {
       this.head.setPosition(this.worldX, this.worldY);
-      this.head.setOffset(this.offsetX + this.headOffsetX, this.offsetY + this.headOffsetY);
+      this.head.setOffset(oX + this.headOffsetX, oY + this.headOffsetY);
     }
     if (this.helmet) {
       this.helmet.setPosition(this.worldX, this.worldY);
-      this.helmet.setOffset(this.offsetX + this.headOffsetX, this.offsetY + this.headOffsetY);
+      this.helmet.setOffset(oX + this.headOffsetX, oY + this.headOffsetY);
     }
     if (this.body) {
       this.body.setPosition(this.worldX, this.worldY);
-      this.body.setOffset(this.offsetX, this.offsetY);
+      this.body.setOffset(oX, oY);
     }
     if (this.rightHand) {
       this.rightHand.setPosition(this.worldX, this.worldY);
-      this.rightHand.setOffset(this.offsetX, this.offsetY);
+      this.rightHand.setOffset(oX, oY);
     }
     if (this.leftHand) {
       this.leftHand.setPosition(this.worldX, this.worldY);
-      this.leftHand.setOffset(this.offsetX, this.offsetY);
+      this.leftHand.setOffset(oX, oY);
     }
   }
 

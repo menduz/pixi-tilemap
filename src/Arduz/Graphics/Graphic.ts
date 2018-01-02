@@ -151,8 +151,8 @@ export class AnimatedGraphic extends PIXI.extras.AnimatedSprite implements IGrap
   }
 
   renderWebGL(renderer: PIXI.WebGLRenderer) {
-    this.centerX = -(this.texture.frame.width / 2 - 16) | 0;
-    this.centerY = -(this.texture.frame.height - 16) | 0;
+    this.centerX = Math.floor(-(this.texture.frame.width / 2 - 16));
+    this.centerY = Math.floor(-(this.texture.frame.height - 16));
 
     this.x = Math.floor(this.worldX * 32 - pixelPosition.x - cameraOffset.x + this.offsetX);
     this.y = Math.floor(this.worldY * 32 - pixelPosition.y - cameraOffset.y + this.offsetY);

@@ -182,6 +182,8 @@ export class Body extends PIXI.Container implements OffsetCapable, WorldPosition
     this.rightHand && (this.rightHand.animating = animate);
     this.leftHand && (this.leftHand.animating = animate);
 
+    this.fixPositions();
+
     super.renderWebGL(renderer);
   }
 

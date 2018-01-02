@@ -78,9 +78,9 @@ function update() {
       updateCamera(engineElapsedTime);
     }
 
-    currentMap.origin.set(pixelPosition.x + cameraOffset.x, pixelPosition.y + cameraOffset.y);
-
     currentMap.update(engineElapsedTime);
+
+    currentMap.origin.set(pixelPosition.x + cameraOffset.x, pixelPosition.y + cameraOffset.y);
 
     _renderer.render(stage);
     _renderer.gl.flush();

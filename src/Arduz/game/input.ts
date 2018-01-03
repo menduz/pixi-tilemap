@@ -8,7 +8,7 @@ let ultimoHeading: Heading = null;
 let Teclas = ['40', '39', '38', '37'];
 
 
-export function initializeCharInput() {
+export function initInput() {
   // let HeadingHist = [0, 1, 2, 3];
 
 

@@ -38,6 +38,7 @@ export class StaticGraphic extends PIXI.Sprite implements IGraphic {
   setPosition(x: number, y: number) {
     this.worldX = x;
     this.worldY = y;
+    this.zIndex = -y;
   }
 
   setOffset(x: number, y: number): void {
@@ -64,7 +65,6 @@ export class StaticGraphic extends PIXI.Sprite implements IGraphic {
   set centered(value: boolean) {
     this._isCentered = value;
   }
-
 
   animate(a: boolean) { }
 
@@ -111,6 +111,7 @@ export class AnimatedGraphic extends PIXI.extras.AnimatedSprite implements IGrap
   setPosition(x: number, y: number) {
     this.worldX = x;
     this.worldY = y;
+    this.zIndex = -y;
   }
 
   private _isCentered = false;

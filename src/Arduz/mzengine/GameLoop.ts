@@ -4,6 +4,7 @@ import { update as updateCamera, pixelPosition, cameraOffset, setCameraPosition 
 import { getGraphicInstance } from "../Graphics/Graphic";
 import { Body } from "../game/Body";
 import { getHeadingTo } from "../game/Input";
+import { Heading } from "../Enums";
 
 export const now = performance ? () => performance.now() : () => Date.now();
 
@@ -151,16 +152,15 @@ export function start(element: HTMLCanvasElement) {
 
   let arbol = getGraphicInstance(3);
 
-  currentMap.addChild(arbol);
+  currentMap.verticalLayer.addChild(arbol);
 
-  arbol.setPosition(10, 10);
+  arbol.setPosition(0, 0);
 
   let bandera = getGraphicInstance(3877);
 
-  currentMap.addChild(bandera);
+  currentMap.verticalLayer.addChild(bandera);
 
   bandera.setPosition(1, 5);
-
 
   currentChar = new Body();
 
@@ -169,13 +169,7 @@ export function start(element: HTMLCanvasElement) {
 
   currentChar.setPosition(0, 0);
 
-  console.log(currentChar);
-
-
-
-
-
-  currentMap.addChild(currentChar);
+  currentMap.verticalLayer.addChild(currentChar);
 
   const char2 = new Body();
 
@@ -185,11 +179,20 @@ export function start(element: HTMLCanvasElement) {
 
   char2.setPosition(0, 0);
 
-  console.log(char2);
-
-  currentMap.addChild(char2);
+  currentMap.verticalLayer.addChild(char2);
 
   setInterval(() => char2.moveByHead(Math.floor(Math.random() * 10) % 4), 500);
+
+
+  const char3 = new Body();
+
+  char3.setBody(23);
+  char3.setHead(5);
+
+  char3.setPosition(3, 2);
+  char3.setHeading(Heading.West);
+
+  currentMap.verticalLayer.addChild(char3);
 
   //  arbol.setParent(currentMap);
 }

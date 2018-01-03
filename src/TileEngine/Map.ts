@@ -1,3 +1,5 @@
+/// <reference types="pixi-display" />
+
 import { ZLayer } from "./ZLayer";
 import { CompositeRectTileLayer } from "./CompositeRectTileLayer";
 import { RectTileLayer } from "./RectTileLayer";
@@ -51,6 +53,8 @@ export class Map extends PIXI.Container {
 
   lowerLayer: CompositeRectTileLayer;
   upperLayer: CompositeRectTileLayer;
+  verticalLayer = new PIXI.Container();
+
   _lastBitmapLength: number;
 
   /**
@@ -102,7 +106,16 @@ export class Map extends PIXI.Container {
   verticalWrap = false;
 
   initialize() {
-    this._createLayers();
+    this.addChild(this.lowerZLayer = new ZLayer(this, 0));
+    this.addChild(this.verticalLayer);
+    this.addChild(this.upperZLayer = new ZLayer(this, 4));
+
+    let parameters = PluginManager.parameters('ShaderTilemap');
+    let useSquareShader = Number(parameters.hasOwnProperty('squareShader') ? parameters['squareShader'] : 1);
+
+    this.lowerZLayer.addChild(this.lowerLayer = new CompositeRectTileLayer(0, [], useSquareShader));
+    this.lowerLayer.shadowColor = new Float32Array([0.0, 0.0, 0.0, 0.5]);
+    this.upperZLayer.addChild(this.upperLayer = new CompositeRectTileLayer(4, [], useSquareShader));
     this.refresh();
   }
 
@@ -118,7 +131,6 @@ export class Map extends PIXI.Container {
   set width(value) {
     if (this._width !== value) {
       this._width = value;
-      this._createLayers();
     }
   }
 
@@ -135,7 +147,6 @@ export class Map extends PIXI.Container {
   set height(value) {
     if (this._height !== value) {
       this._height = value;
-      this._createLayers();
     }
   }
 
@@ -153,7 +164,6 @@ export class Map extends PIXI.Container {
   set tileWidth(value) {
     if (this._tileWidth !== value) {
       this._tileWidth = value;
-      this._createLayers();
     }
   }
 
@@ -170,7 +180,6 @@ export class Map extends PIXI.Container {
   set tileHeight(value) {
     if (this._tileHeight !== value) {
       this._tileHeight = value;
-      this._createLayers();
     }
   }
 
@@ -217,6 +226,20 @@ export class Map extends PIXI.Container {
       if (child.update) {
         child.update(deltaTime);
       }
+    });
+
+    this.verticalLayer.children.forEach(function (child: any) {
+      if (child.update) {
+        child.update(deltaTime);
+      }
+      if ('worldY' in child)
+        child.zIndex = -child.worldY;
+    });
+
+    this.verticalLayer.children.sort(function (a, b) {
+      a.zIndex = a.zIndex || 0;
+      b.zIndex = b.zIndex || 0;
+      return b.zIndex - a.zIndex;
     });
   }
 
@@ -410,34 +433,6 @@ export class Map extends PIXI.Container {
   }
 
   /**
-   * @method _createLayers
-   * @private
-   */
-  _createLayers() {
-    // let width = this._width;
-    // let height = this._height;
-    // let margin = this._margin;
-    // let tileCols = Math.ceil(width / this._tileWidth) + 1;
-    // let tileRows = Math.ceil(height / this._tileHeight) + 1;
-    // let layerWidth = this._layerWidth = tileCols * this._tileWidth;
-    // let layerHeight = this._layerHeight = tileRows * this._tileHeight;
-    this._needsRepaint = true;
-
-    if (!this.lowerZLayer) {
-      // @hackerham: create layers only in initialization. Doesn't depend on width/height
-      this.addChild(this.lowerZLayer = new ZLayer(this, 0));
-      this.addChild(this.upperZLayer = new ZLayer(this, 4));
-
-      let parameters = PluginManager.parameters('ShaderTilemap');
-      let useSquareShader = Number(parameters.hasOwnProperty('squareShader') ? parameters['squareShader'] : 1);
-
-      this.lowerZLayer.addChild(this.lowerLayer = new CompositeRectTileLayer(0, [], useSquareShader));
-      this.lowerLayer.shadowColor = new Float32Array([0.0, 0.0, 0.0, 0.5]);
-      this.upperZLayer.addChild(this.upperLayer = new CompositeRectTileLayer(4, [], useSquareShader));
-    }
-  }
-
-  /**
    * @method _updateLayerPositions
    * @param {Number} startX
    * @param {Number} startY
@@ -489,13 +484,13 @@ export class Map extends PIXI.Container {
     let my = startY + y;
     let dx = x * this._tileWidth, dy = y * this._tileHeight;
     let tileId0 = this._readMapData(mx, my, 0);
-    // let tileId1 = this._readMapData(mx, my, 1);
+    let tileId1 = this._readMapData(mx, my, 1);
     // let tileId2 = this._readMapData(mx, my, 2);
     // let tileId3 = this._readMapData(mx, my, 3);
     // let shadowBits = this._readMapData(mx, my, 4);
     // let upperTileId1 = this._readMapData(mx, my - 1, 1);
     let lowerLayer = this.lowerLayer.children[0];
-    // let upperLayer = this.upperLayer.children[0];
+    let upperLayer = this.upperLayer.children[0];
 
     // if (this._isHigherTile(tileId0)) {
     this._drawTile(lowerLayer, tileId0, dx, dy);
@@ -503,7 +498,7 @@ export class Map extends PIXI.Container {
     //   this._drawTile(lowerLayer, tileId0, dx, dy);
     // }
     // if (this._isHigherTile(tileId1)) {
-    //   this._drawTile(upperLayer, tileId1, dx, dy);
+    this._drawTile(upperLayer, tileId1, dx, dy);
     // } else {
     //   this._drawTile(lowerLayer, tileId1, dx, dy);
     // }

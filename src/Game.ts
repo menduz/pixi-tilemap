@@ -2,7 +2,7 @@ import { start } from "./Arduz/mzengine/GameLoop";
 import { initRenderer } from "./TileEngine/TileRenderer";
 import { loadBodies } from "./Arduz/game/Body";
 import { loadHeads, loadHelmets } from "./Arduz/game/Head";
-import { initializeCharInput } from "./Arduz/game/Input";
+import { initInput } from "./Arduz/game/Input";
 import { loadGraphics } from "./Arduz/Graphics/IndexedGraphics";
 
 
@@ -19,24 +19,8 @@ async function startGame() {
     loadHelmets('cdn/indexes/cascos.txt')
   ]);
 
-  // var myChara = BodyFactory(1, 5, 45);
-  // char.chars.push(myChara);
-
-  // setInterval(function () {
-  //   myChara.moveByHead(((Math.random() * 700) % 4) | 0)
-  // }, 192)
-
-  // var mainChar = char.BodyFactory(1, 4, 45);
-
-  // mainChar.body.name = "menduz"
-
-  // char.chars.push(mainChar);
-
-  // char.mainChar = mainChar;
-
-  initializeCharInput();
+  initInput();
   start(element);
-
 }
 
 startGame().then(

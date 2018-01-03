@@ -166,6 +166,8 @@ export class Body extends PIXI.Container implements OffsetCapable, WorldPosition
     if (didSomethingChange) {
       this.fixPositions();
     }
+
+    this.zIndex = -this.worldY;
   }
 
   idleCounter = 0;

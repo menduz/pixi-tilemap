@@ -2,8 +2,8 @@ import { setTileset } from "../../TileEngine/Tile";
 import { Map } from "../../TileEngine/Map";
 import { update as updateCamera, pixelPosition, cameraOffset, setCameraPosition } from './Camera';
 import { getGraphicInstance } from "../Graphics/Graphic";
-import { Body } from "../game/Body";
-import { getHeadingTo } from "../game/Input";
+import { Body } from "../Game/Body";
+import { getHeadingTo } from "../Game/Input";
 import { Heading } from "../Enums";
 
 export const now = performance ? () => performance.now() : () => Date.now();
@@ -70,8 +70,8 @@ function update() {
       currentChar.moveByHead(headingTo);
     }
 
-    cameraOffset.x = Math.floor(-stage.filterArea.width / 2);
-    cameraOffset.y = Math.floor(-stage.filterArea.height / 2);
+    cameraOffset.x = Math.floor(-window.innerWidth / 2);
+    cameraOffset.y = Math.floor(-window.innerHeight / 2);
 
     currentMap.update(engineElapsedTime);
 

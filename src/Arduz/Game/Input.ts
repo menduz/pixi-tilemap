@@ -1,5 +1,5 @@
 
-import { KeyStates } from '../mzengine/Input';
+import { KeyStates } from '../Engine/Input';
 import { Heading } from '../Enums';
 
 export let activeHeading: Heading = null;

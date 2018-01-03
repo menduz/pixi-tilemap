@@ -1,8 +1,8 @@
-import { start } from "./Arduz/mzengine/GameLoop";
+import { start } from "./Arduz/Engine/GameLoop";
 import { initRenderer } from "./TileEngine/TileRenderer";
-import { loadBodies } from "./Arduz/game/Body";
-import { loadHeads, loadHelmets } from "./Arduz/game/Head";
-import { initInput } from "./Arduz/game/Input";
+import { loadBodies } from "./Arduz/Game/Body";
+import { loadHeads, loadHelmets } from "./Arduz/Game/Head";
+import { initInput } from "./Arduz/Game/Input";
 import { loadGraphics } from "./Arduz/Graphics/IndexedGraphics";
 
 

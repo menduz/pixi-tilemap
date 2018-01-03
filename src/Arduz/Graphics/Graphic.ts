@@ -1,5 +1,5 @@
 import { graphicsDB, getTextureFromIndex } from "./IndexedGraphics";
-import { pixelPosition, cameraOffset } from '../mzengine/Camera';
+import { pixelPosition, cameraOffset } from '../Engine/Camera';
 
 export interface IGraphic extends PIXI.Sprite, WorldPositionCapable, OffsetCapable {
   vertical: boolean;

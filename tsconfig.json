@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "module": "amd",
     "target": "es2015",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "outFile": "bin/arduz.js",
     "sourceMap": true,
     "inlineSources": true,
     "forceConsistentCasingInFileNames": true,
-    "declaration": true,
     "noUnusedLocals": true,
     "typeRoots": [
       "lib/"

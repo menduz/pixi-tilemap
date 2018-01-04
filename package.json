@@ -19,9 +19,9 @@
     "clean": "rimraf bin && mkdirp bin",
     "prestart": "npm run clean",
     "start": "parallelshell \"npm run watch\"",
-    "watch": "tsc -w",
+    "watch": "rollup -c -w",
     "prebuild": "npm run clean",
-    "build": "tsc",
+    "build": "rollup -c",
     "docs": "jsdoc -c scripts/jsdoc.conf.json -R README.md"
   },
   "files": [
@@ -42,6 +42,9 @@
     "mkdirp": "^0.5.1",
     "parallelshell": "^2.0.0",
     "rimraf": "^2.5.3",
+    "rollup": "^0.53.3",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.9.0",
     "tslint": "^5.8.0",
     "typescript": "^2.6.2"
   }

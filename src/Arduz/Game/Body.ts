@@ -235,7 +235,6 @@ export function loadBodies(url: string) {
   let grhHeader = /WALK(1|2|3|4)=(\d+)/;
   let headOffsetHeaderX = /HeadOffsetX=(.+)/;
   let headOffsetHeaderY = /HeadOffsetY=(.+)/;
-  this.loaded = false;
   return new Promise((ok, err) => {
     $.ajax({
       url,

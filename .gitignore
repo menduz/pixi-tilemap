@@ -28,3 +28,5 @@ docs/
 
 # jetBrains IDE ignores
 .idea
+
+.rpt2_cache

@@ -53,7 +53,7 @@ function parseInto(obj: any, e: string) {
 export function loadHeads(url: string) {
   return new Promise((ok, err) => {
     $.ajax({
-      url: url || 'cdn/indexes/cabezas.txt',
+      url,
       method: 'GET',
       success: function (e: any) {
         parseInto(heads, e);
@@ -67,7 +67,7 @@ export function loadHeads(url: string) {
 export function loadHelmets(url: string) {
   return new Promise((ok, err) => {
     $.ajax({
-      url: url || 'cdn/indexes/cascos.txt',
+      url,
       method: 'GET',
       success: function (e: any) {
         parseInto(helmets, e);

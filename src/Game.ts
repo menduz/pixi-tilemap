@@ -13,10 +13,10 @@ async function startGame() {
   const element: HTMLCanvasElement = document.querySelector('#backCanvas');
 
   await Promise.all([
-    loadGraphics('cdn/indexes/graficos.txt'),
-    loadBodies('cdn/indexes/cuerpos.txt'),
-    loadHeads('cdn/indexes/cabezas.txt'),
-    loadHelmets('cdn/indexes/cascos.txt')
+    loadGraphics('cdn/indexes/graficos.ini'),
+    loadBodies('cdn/indexes/cuerpos.ini'),
+    loadHeads('cdn/indexes/cabezas.ini'),
+    loadHelmets('cdn/indexes/cascos.ini')
   ]);
 
   initInput();

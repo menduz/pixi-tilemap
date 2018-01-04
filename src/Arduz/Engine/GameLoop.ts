@@ -156,10 +156,10 @@ export function start(element: HTMLCanvasElement) {
 
   arbol.setPosition(0, 0);
 
-  let bandera = getGraphicInstance(3877);
+  let bandera = getGraphicInstance(7001);
 
   currentMap.verticalLayer.addChild(bandera);
-
+  bandera.vertical = true;
   bandera.setPosition(1, 5);
 
   currentChar = new Body();
@@ -186,8 +186,8 @@ export function start(element: HTMLCanvasElement) {
 
   const char3 = new Body();
 
-  char3.setBody(23);
-  char3.setHead(5);
+  char3.setBody(42);
+  char3.setHead(39);
 
   char3.setPosition(3, 2);
   char3.setHeading(Heading.West);

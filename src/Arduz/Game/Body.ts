@@ -238,7 +238,7 @@ export function loadBodies(url: string) {
   this.loaded = false;
   return new Promise((ok, err) => {
     $.ajax({
-      url: url || 'cdn/indexes/cuerpos.txt',
+      url,
       method: 'GET',
       success: function (e: any) {
 

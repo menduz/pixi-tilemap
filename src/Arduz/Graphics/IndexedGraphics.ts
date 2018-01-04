@@ -85,7 +85,7 @@ export function loadGraphics(url: string) {
 
   return new Promise((ok, err) => {
     $.ajax({
-      url: url || 'cdn/indexes/graficos.txt',
+      url: url,
       method: 'GET',
       success: function (e: any) {
         let datos = e.split(/(\n)/g);

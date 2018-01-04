@@ -169,8 +169,9 @@ export class AnimatedGraphic extends PIXI.extras.AnimatedSprite implements IGrap
 }
 
 export function getGraphicInstance(index: number): IGraphic {
-  if (!(index in graphicsDB))
-    throw "Graphic not found: " + index;
+  if (!(index in graphicsDB)) {
+    throw new Error("Graphic not found: " + index);
+  }
 
   const graphic = graphicsDB[index];
   let ret: IGraphic;

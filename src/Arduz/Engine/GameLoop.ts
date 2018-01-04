@@ -159,12 +159,12 @@ export function start(element: HTMLCanvasElement) {
   let bandera = getGraphicInstance(7001);
 
   currentMap.verticalLayer.addChild(bandera);
-  bandera.vertical = true;
+  bandera.centered = true;
   bandera.setPosition(1, 5);
 
-  currentChar = new Body();
+  (window as any).currentChar = currentChar = new Body();
 
-  currentChar.setBody(1);
+  currentChar.setBody(4);
   currentChar.setHead(1);
 
   currentChar.setPosition(0, 0);
@@ -173,7 +173,7 @@ export function start(element: HTMLCanvasElement) {
 
   const char2 = new Body();
 
-  char2.setBody(2);
+  char2.setBody(5);
   char2.setHead(4);
   char2.setHelmet(6);
 
@@ -186,8 +186,8 @@ export function start(element: HTMLCanvasElement) {
 
   const char3 = new Body();
 
-  char3.setBody(42);
-  char3.setHead(39);
+  char3.setBody(6);
+  char3.setHead(2);
 
   char3.setPosition(3, 2);
   char3.setHeading(Heading.West);

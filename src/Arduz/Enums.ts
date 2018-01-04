@@ -1,6 +1,6 @@
 export enum Heading {
-  North = 2,
-  South = 0,
+  North = 0,
   East = 1,
+  South = 2,
   West = 3
 }

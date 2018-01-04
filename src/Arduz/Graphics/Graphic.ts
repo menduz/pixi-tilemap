@@ -2,7 +2,6 @@ import { graphicsDB, getTextureFromIndex } from "./IndexedGraphics";
 import { pixelPosition, cameraOffset } from '../Engine/Camera';
 
 export interface IGraphic extends PIXI.Sprite, WorldPositionCapable, OffsetCapable {
-  vertical: boolean;
   centered: boolean;
   animate(flag: boolean): void;
 }
@@ -44,16 +43,6 @@ export class StaticGraphic extends PIXI.Sprite implements IGraphic {
   setOffset(x: number, y: number): void {
     this._offsetX = x;
     this._offsetY = y;
-  }
-
-  private _isVertical = false;
-
-  get vertical(): boolean {
-    return this._isVertical;
-  }
-
-  set vertical(value: boolean) {
-    this._isVertical = value;
   }
 
   private _isCentered = false;
@@ -124,15 +113,6 @@ export class AnimatedGraphic extends PIXI.extras.AnimatedSprite implements IGrap
     this._isCentered = value;
   }
 
-  private _isVertical = false;
-
-  get vertical(): boolean {
-    return this._isVertical;
-  }
-
-  set vertical(value: boolean) {
-    this._isVertical = value;
-  }
 
   animate(animate: boolean) {
     if (animate && !this.playing)

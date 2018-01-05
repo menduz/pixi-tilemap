@@ -1,4 +1,4 @@
-/// <reference types="pixi.js" />
+/// <reference path="../../lib/pixi.js/index.d.ts" />
 
 
 import { RectTileLayer } from "./RectTileLayer";

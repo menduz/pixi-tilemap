@@ -1,4 +1,5 @@
-/// <reference types="pixi.js" />
+/// <reference path="../pixi.js/index.d.ts" />
+
 declare module PIXI {
   interface Container {
     containerRenderWebGL(renderer: WebGLRenderer): void;

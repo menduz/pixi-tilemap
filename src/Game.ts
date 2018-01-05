@@ -1,11 +1,10 @@
 import { start } from "./Arduz/Engine/GameLoop";
 import { initRenderer } from "./TileEngine/TileRenderer";
-import { loadBodies } from "./Arduz/Game/Body";
+import { loadBodies, Body } from "./Arduz/Game/Body";
 import { loadHeads, loadHelmets } from "./Arduz/Game/Head";
 import { initInput } from "./Arduz/Game/Input";
 import { loadGraphics } from "./Arduz/Graphics/IndexedGraphics";
-
-
+import { WebrtcClient } from "./Arduz/net/Connection";
 
 async function startGame() {
   initRenderer();
@@ -20,6 +19,11 @@ async function startGame() {
   ]);
 
   initInput();
+
+  const client = (window as any).client = new WebrtcClient(new Body());
+
+  client.connect();
+
   start(element);
 }
 

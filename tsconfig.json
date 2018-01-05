@@ -8,14 +8,9 @@
     "inlineSources": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
-    "typeRoots": [
-      "lib/"
+    "lib": [
+      "es2015",
+      "dom"
     ]
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules/**/*"
-  ]
+  }
 }

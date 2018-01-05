@@ -1,4 +1,4 @@
-/// <reference types="pixi-display" />
+/// <reference path="../../lib/pixi-display/index.d.ts" />
 
 import { ZLayer } from "./ZLayer";
 import { CompositeRectTileLayer } from "./CompositeRectTileLayer";

@@ -33,9 +33,13 @@
     "README.md"
   ],
   "dependencies": {
-    "glslify": "^5.0.2"
+    "glslify": "^5.0.2",
+    "simple-peer": "^8.2.0",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@types/simple-peer": "^6.1.4",
+    "@types/uuid": "^3.4.3",
     "del": "^2.2.0",
     "jaguarjs-jsdoc": "^1.0.1",
     "jsdoc": "^3.4.0",
@@ -43,6 +47,9 @@
     "parallelshell": "^2.0.0",
     "rimraf": "^2.5.3",
     "rollup": "^0.53.3",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript2": "^0.9.0",
     "tslint": "^5.8.0",
